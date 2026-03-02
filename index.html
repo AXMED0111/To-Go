@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#00b87a">
     <title>Somali Store</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -322,9 +326,134 @@
         .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: #fbbf24; }
         .sync-dot.synced { background: var(--green); }
         .sync-dot.error  { background: #ef4444; }
+
+        /* ===== DESKTOP FULL SCREEN ===== */
+        @media (min-width: 1024px) {
+            body { display: grid; grid-template-columns: 260px 1fr; grid-template-rows: auto; min-height: 100vh; padding-bottom: 0; }
+            #desktop-sidebar { display: flex !important; }
+            #mobile-header { display: none !important; }
+            .main-content-wrap { grid-column: 2; padding: 2rem; max-width: none; }
+            .customer-only-main { max-width: none !important; padding-top: 0 !important; }
+            #admin-view { max-width: none !important; padding-top: 0 !important; }
+            #products-grid { grid-template-columns: repeat(4, 1fr) !important; }
+            .modal-sheet { max-width: 600px; }
+        }
+        @media (max-width: 1023px) {
+            #desktop-sidebar { display: none !important; }
+        }
+
+        /* Desktop Sidebar */
+        #desktop-sidebar {
+            flex-direction: column; background: #fff;
+            border-right: 1px solid var(--border);
+            height: 100vh; position: sticky; top: 0;
+            overflow-y: auto; z-index: 30;
+        }
+        .sidebar-link {
+            display: flex; align-items: center; gap: 0.75rem;
+            padding: 0.7rem 1.1rem; border-radius: 12px;
+            cursor: pointer; transition: all 0.2s;
+            font-size: 0.88rem; font-weight: 600; color: var(--muted);
+            margin: 2px 8px;
+        }
+        .sidebar-link:hover { background: var(--green-light); color: var(--green); }
+        .sidebar-link.active { background: var(--green); color: white; }
+        .sidebar-link i { width: 18px; text-align: center; }
+
+        /* Marketing banners */
+        @keyframes marquee { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
+        .marquee-wrap { overflow: hidden; white-space: nowrap; }
+        .marquee-text { display: inline-block; animation: marquee 18s linear infinite; }
+        .mkt-banner { border-radius: 14px; padding: 0.75rem 1rem; font-size: 0.88rem; font-weight: 600; cursor: pointer; }
+
+        /* City pills */
+        .city-pill {
+            padding: 0.4rem 0.85rem; border-radius: 50px;
+            border: 1.5px solid var(--border); background: white;
+            color: var(--muted); cursor: pointer; font-size: 0.8rem;
+            font-weight: 600; white-space: nowrap; transition: all 0.2s;
+        }
+        .city-pill:hover { border-color: var(--green); color: var(--green); }
+        .city-pill.selected { background: var(--green); color: white; border-color: var(--green); }
+
+        /* Inline USSD */
+        .ussd-inline {
+            background: #0f1923; color: #00e676;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem; letter-spacing: 2px;
+            padding: 0.85rem 1.2rem; border-radius: 12px;
+            text-align: center; text-shadow: 0 0 10px rgba(0,230,118,0.5);
+            word-break: break-all;
+        }
+
+        /* Network badge */
+        .net-badge { font-size: 0.65rem; font-weight: 800; padding: 2px 7px; border-radius: 50px; }
+
+        /* Chat bubbles */
+        .chat-bot { background: var(--green-light); border-radius: 18px 18px 18px 4px; padding: 0.7rem 1rem; max-width: 82%; font-size: 0.87rem; white-space: pre-line; }
+        .chat-user { background: var(--green); color: white; border-radius: 18px 18px 4px 18px; padding: 0.7rem 1rem; max-width: 82%; margin-left: auto; font-size: 0.87rem; }
+
+        /* Tab buttons */
+        .tab-btn { padding: 0.55rem 1.1rem; border-radius: 10px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; background: transparent; color: var(--muted); }
+        .tab-btn.active { background: var(--green); color: white; }
+
+        /* Admin badge */
+        .admin-only-sidebar { display: none; }
+        .admin-only-sidebar.show { display: block; }
+
+        /* Mobile bottom nav */
+        #mobile-bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: white; border-top: 1px solid var(--border);
+            display: flex; justify-content: space-around;
+            padding: 0.4rem 0 0.5rem; z-index: 40;
+        }
+        @media (min-width: 1024px) { #mobile-bottom-nav { display: none !important; } }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; padding: 0.3rem 0.6rem; border-radius: 10px; transition: all 0.2s; font-size: 0.62rem; font-weight: 600; color: var(--muted); border: none; background: none; }
+        .nav-btn.active { color: var(--green); }
+        .nav-btn i { font-size: 1rem; }
+
+        /* Page sections */
+        .page-sec { display: none; }
+        .page-sec.active { display: block; }
     </style>
 </head>
 <body>
+
+<!-- DESKTOP SIDEBAR -->
+<aside id="desktop-sidebar" style="display:none;">
+    <div class="p-4 border-b border-gray-100">
+        <div class="flex items-center gap-3">
+            <div class="brand-gradient w-10 h-10 rounded-xl flex items-center justify-center shadow flex-shrink-0">
+                <i class="fas fa-store text-white text-sm"></i>
+            </div>
+            <div class="min-w-0">
+                <div id="sidebar-store-name" class="font-display font-800 text-base text-gray-900 truncate">Somali Store</div>
+                <div id="sidebar-role" class="text-xs text-gray-400">Customer</div>
+            </div>
+        </div>
+    </div>
+    <nav class="p-2 flex-1">
+        <p class="text-xs font-700 text-gray-400 uppercase tracking-widest px-3 py-2 mt-1">Store</p>
+        <div class="sidebar-link active" id="sl-shop" onclick="showPage('shop')"><i class="fas fa-store"></i> Shop</div>
+        <div class="sidebar-link" id="sl-cart" onclick="openCart()"><i class="fas fa-shopping-bag"></i> Cart <span id="sidebar-cart-badge" class="ml-auto bg-red-500 text-white text-xs w-5 h-5 rounded-full items-center justify-center hidden flex">0</span></div>
+        <div class="sidebar-link customer-only" id="sl-account" onclick="showPage('account')"><i class="fas fa-user"></i> Account</div>
+        <div class="sidebar-link customer-only" id="sl-chat" onclick="showPage('chat')"><i class="fas fa-comments"></i> Help / Chat</div>
+        <div class="admin-only-sidebar" id="sidebar-admin-section">
+            <p class="text-xs font-700 text-gray-400 uppercase tracking-widest px-3 py-2 mt-3">Admin</p>
+            <div class="sidebar-link" id="sl-dashboard" onclick="showPage('dashboard')"><i class="fas fa-chart-bar"></i> Dashboard</div>
+            <div class="sidebar-link" id="sl-marketing" onclick="showPage('marketing')"><i class="fas fa-bullhorn"></i> Marketing</div>
+            <div class="sidebar-link" id="sl-customers" onclick="showPage('customers')"><i class="fas fa-users"></i> Customers</div>
+            <div class="sidebar-link" id="sl-settings" onclick="showPage('settings')"><i class="fas fa-cog"></i> Settings</div>
+        </div>
+    </nav>
+    <div class="p-3 border-t border-gray-100">
+        <button onclick="toggleAdminLogin()" class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-600 text-gray-500 hover:bg-gray-100">
+            <i id="sidebar-lock-icon" class="fas fa-lock text-sm"></i>
+            <span id="sidebar-admin-label">Admin Login</span>
+        </button>
+    </div>
+</aside>
 
 <!-- LOADING SCREEN -->
 <div id="loading-screen" class="loading-screen">
@@ -364,8 +493,8 @@
     </button>
 </div>
 
-<!-- ============ HEADER ============ -->
-<header class="glass-header fixed top-0 left-0 right-0 z-50">
+<!-- ============ HEADER (mobile only) ============ -->
+<header id="mobile-header" class="glass-header fixed top-0 left-0 right-0 z-50">
     <div class="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
         <div class="flex items-center gap-2.5 min-w-0">
             <div class="brand-gradient w-10 h-10 rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
@@ -397,9 +526,26 @@
     </div>
 </header>
 
-<!-- ============ CUSTOMER VIEW ============ -->
-<main id="customer-view" class="customer-only max-w-lg mx-auto pt-20 px-4 space-y-5 pb-24">
-    <div class="brand-gradient rounded-2xl p-4 text-white flex items-center justify-between shadow-lg mt-2">
+<!-- MOBILE BOTTOM NAV -->
+<nav id="mobile-bottom-nav">
+    <button class="nav-btn active" id="mn-shop" onclick="showPage('shop')"><i class="fas fa-store"></i><span>Shop</span></button>
+    <button class="nav-btn customer-only" id="mn-chat" onclick="showPage('chat')"><i class="fas fa-comments"></i><span>Help</span></button>
+    <button class="nav-btn customer-only" id="mn-account" onclick="showPage('account')"><i class="fas fa-user"></i><span>Account</span></button>
+    <button class="nav-btn admin-only hidden" id="mn-dashboard" onclick="showPage('dashboard')"><i class="fas fa-chart-bar"></i><span>Stats</span></button>
+    <button class="nav-btn admin-only hidden" id="mn-marketing" onclick="showPage('marketing')"><i class="fas fa-bullhorn"></i><span>Marketing</span></button>
+    <button class="nav-btn admin-only hidden" id="mn-customers" onclick="showPage('customers')"><i class="fas fa-users"></i><span>Customers</span></button>
+    <button class="nav-btn admin-only hidden" id="mn-settings" onclick="showPage('settings')"><i class="fas fa-cog"></i><span>Settings</span></button>
+</nav>
+
+<!-- ============ MAIN CONTENT WRAP ============ -->
+<div class="main-content-wrap">
+
+<!-- ============ SHOP PAGE ============ -->
+<main id="page-shop" class="page-sec active customer-only-main max-w-lg mx-auto pt-20 lg:pt-4 px-4 space-y-4 pb-28">
+    <!-- Marketing banners -->
+    <div id="marketing-banners" class="space-y-2 mt-2"></div>
+
+    <div class="brand-gradient rounded-2xl p-4 text-white flex items-center justify-between shadow-lg">
         <div>
             <div class="font-display font-800 text-xl leading-tight" id="hero-store-name">Somali Store</div>
             <p class="text-white/75 text-xs mt-0.5">Free delivery · WhatsApp ordering · 🔥 Live data</p>
@@ -409,7 +555,7 @@
 
     <div class="relative">
         <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none"></i>
-        <input type="text" id="search-input" class="form-input w-full py-3 pl-11" placeholder="Search products..." oninput="renderShop()">
+        <input type="text" id="search-input" class="form-input w-full py-3 pl-11" placeholder="Search products..." oninput="renderShop()" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
     </div>
 
     <div class="flex gap-2 overflow-x-auto no-scroll pb-1" id="categories-row"></div>
@@ -420,7 +566,6 @@
             <span id="product-count" class="text-xs text-gray-400 font-medium bg-gray-100 px-3 py-1 rounded-full">Loading...</span>
         </div>
         <div id="products-grid" class="grid grid-cols-2 gap-3">
-            <!-- Loading skeletons -->
             <div class="product-card h-48 bg-gray-100 animate-pulse rounded-2xl"></div>
             <div class="product-card h-48 bg-gray-100 animate-pulse rounded-2xl"></div>
             <div class="product-card h-48 bg-gray-100 animate-pulse rounded-2xl"></div>
@@ -438,106 +583,161 @@
     </div>
 </main>
 
-<!-- ============ ADMIN VIEW ============ -->
-<main id="admin-view" class="admin-only hidden max-w-lg mx-auto pt-20 px-4 space-y-5 pb-24">
-    <div class="flex items-center justify-between">
-        <div>
-            <h2 class="font-display font-800 text-2xl text-gray-900">Dashboard</h2>
-            <p class="text-sm text-gray-500 mt-0.5">Live Firebase data</p>
+<!-- ============ ACCOUNT PAGE ============ -->
+<div id="page-account" class="page-sec max-w-lg mx-auto pt-20 lg:pt-4 px-4 pb-28 space-y-4">
+    <div id="auth-section">
+        <div class="text-center mb-5">
+            <div class="w-16 h-16 brand-gradient rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg"><i class="fas fa-user text-white text-2xl"></i></div>
+            <h2 class="font-display font-800 text-2xl">My Account</h2>
+            <p class="text-sm text-gray-400 mt-1">Register or login to track orders</p>
         </div>
-        <button onclick="showAddModal()" class="btn-green flex items-center gap-2 px-4 py-2.5 text-sm">
-            <i class="fas fa-plus"></i> Add Product
-        </button>
+        <div class="flex gap-2 mb-4">
+            <button class="tab-btn active flex-1" id="tab-login" onclick="switchAuthTab('login')">Login</button>
+            <button class="tab-btn flex-1" id="tab-reg" onclick="switchAuthTab('register')">Register</button>
+        </div>
+        <div id="auth-login" class="card p-5 space-y-3">
+            <input type="text" id="login-phone" placeholder="Phone number (e.g. 0615xxxxxx)" class="form-input" autocomplete="off">
+            <input type="password" id="login-pw" placeholder="Password" class="form-input">
+            <button onclick="doLogin()" class="btn-green w-full py-3 font-700">Login</button>
+            <p id="login-err" class="text-red-500 text-xs text-center hidden"></p>
+        </div>
+        <div id="auth-register" class="card p-5 space-y-3 hidden">
+            <input type="text" id="reg-name" placeholder="Full Name *" class="form-input" autocomplete="off">
+            <input type="text" id="reg-phone" placeholder="Phone Number * (username)" class="form-input" autocomplete="off">
+            <input type="email" id="reg-email" placeholder="Email (optional, for promotions)" class="form-input" autocomplete="off">
+            <input type="password" id="reg-pw" placeholder="Password (min 6 chars)" class="form-input">
+            <p class="text-xs text-gray-400">Your phone number is your username.</p>
+            <button onclick="doRegister()" class="btn-green w-full py-3 font-700">Create Account</button>
+            <p id="reg-err" class="text-red-500 text-xs text-center hidden"></p>
+        </div>
     </div>
+    <div id="profile-section" class="hidden space-y-4">
+        <div class="card p-5">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-14 h-14 brand-gradient rounded-2xl flex items-center justify-center shadow"><i class="fas fa-user text-white text-xl"></i></div>
+                <div>
+                    <p id="profile-name" class="font-bold text-lg"></p>
+                    <p id="profile-phone" class="text-sm text-gray-500"></p>
+                    <p id="profile-email" class="text-xs text-gray-400"></p>
+                </div>
+            </div>
+            <button onclick="doLogout()" class="w-full py-2.5 bg-red-50 text-red-600 rounded-2xl font-700 text-sm hover:bg-red-100">Logout</button>
+        </div>
+    </div>
+</div>
 
-    <!-- Sync status -->
+<!-- ============ CHAT PAGE ============ -->
+<div id="page-chat" class="page-sec max-w-lg mx-auto pt-20 lg:pt-4 px-4 pb-28 space-y-4">
+    <div class="text-center mb-2">
+        <h2 class="font-display font-800 text-xl">Help / Chatbot</h2>
+        <p class="text-xs text-gray-400">Ask in Somali or English · Su'aal ku weydii Soomaaliga</p>
+    </div>
+    <div id="chat-messages" class="card p-4 space-y-3 overflow-y-auto" style="min-height:260px;max-height:420px;">
+        <div class="chat-bot">👋 Salaam! I'm your store assistant.<br>Ask me anything in Somali or English!<br><br><em class="text-xs opacity-60">Waxaad iga weydiin kartaa wax kasta Soomaaliga ama Ingiriisiga!</em></div>
+    </div>
+    <div class="flex gap-2">
+        <input type="text" id="chat-input" class="form-input flex-1" placeholder="Type your question..." autocomplete="off" onkeydown="if(event.key==='Enter')sendChat()">
+        <button onclick="sendChat()" class="btn-green px-4 py-2"><i class="fas fa-paper-plane"></i></button>
+    </div>
+    <div class="flex flex-wrap gap-2">
+        <button onclick="quickChat('delivery')" class="cat-pill text-xs">📦 Delivery</button>
+        <button onclick="quickChat('payment')" class="cat-pill text-xs">💳 Payment</button>
+        <button onclick="quickChat('zaad')" class="cat-pill text-xs">📱 ZAAD</button>
+        <button onclick="quickChat('returns')" class="cat-pill text-xs">🔄 Returns</button>
+        <button onclick="quickChat('hours')" class="cat-pill text-xs">⏰ Hours</button>
+        <button onclick="quickChat('crypto')" class="cat-pill text-xs">₿ Crypto</button>
+    </div>
+</div>
+
+<!-- ============ ADMIN DASHBOARD PAGE ============ -->
+<div id="page-dashboard" class="page-sec admin-only hidden max-w-lg mx-auto pt-20 lg:pt-4 px-4 space-y-5 pb-28">
+    <div class="flex items-center justify-between">
+        <div><h2 class="font-display font-800 text-2xl text-gray-900">Dashboard</h2><p class="text-sm text-gray-500">Live Firebase data</p></div>
+        <button onclick="showAddModal()" class="btn-green flex items-center gap-2 px-4 py-2.5 text-sm"><i class="fas fa-plus"></i> Add Product</button>
+    </div>
     <div class="card p-3 flex items-center gap-3">
         <i class="fas fa-fire text-orange-500"></i>
-        <div class="flex-1">
-            <p class="text-sm font-700 text-gray-800">Firebase Firestore</p>
-            <p id="firebase-status-text" class="text-xs text-gray-400">Connected — data saves instantly to cloud</p>
-        </div>
+        <div class="flex-1"><p class="text-sm font-700 text-gray-800">Firebase Firestore</p><p id="firebase-status-text" class="text-xs text-gray-400">Connected — data saves instantly</p></div>
         <div id="firebase-dot" class="sync-dot synced"></div>
     </div>
-
-    <!-- Stats -->
     <div class="grid grid-cols-3 gap-3">
-        <div class="stat-card text-center">
-            <div class="text-2xl font-display font-800 text-green-600" id="stat-products">0</div>
-            <div class="text-xs text-gray-500 font-medium mt-0.5">Products</div>
-        </div>
-        <div class="stat-card text-center">
-            <div class="text-2xl font-display font-800 text-blue-600" id="stat-cats">0</div>
-            <div class="text-xs text-gray-500 font-medium mt-0.5">Categories</div>
-        </div>
-        <div class="stat-card text-center">
-            <div class="text-2xl font-display font-800 text-orange-500" id="stat-active">0</div>
-            <div class="text-xs text-gray-500 font-medium mt-0.5">In Stock</div>
+        <div class="stat-card text-center"><div class="text-2xl font-display font-800 text-green-600" id="stat-products">0</div><div class="text-xs text-gray-500 mt-0.5">Products</div></div>
+        <div class="stat-card text-center"><div class="text-2xl font-display font-800 text-blue-600" id="stat-cats">0</div><div class="text-xs text-gray-500 mt-0.5">Categories</div></div>
+        <div class="stat-card text-center"><div class="text-2xl font-display font-800 text-orange-500" id="stat-active">0</div><div class="text-xs text-gray-500 mt-0.5">In Stock</div></div>
+    </div>
+    <div class="stat-card text-center"><div class="text-2xl font-display font-800 text-purple-600" id="stat-customers">0</div><div class="text-xs text-gray-500 mt-0.5">Registered Customers</div></div>
+    <div>
+        <h3 class="font-bold text-gray-800 mb-3">All Products <span class="text-xs text-green-500 font-normal">(live sync)</span></h3>
+        <div id="admin-product-list" class="space-y-2.5"></div>
+    </div>
+    <button onclick="exitAdmin()" class="w-full py-3 bg-gray-100 text-gray-600 rounded-2xl font-600 hover:bg-gray-200 flex items-center justify-center gap-2"><i class="fas fa-sign-out-alt"></i> Exit Admin Mode</button>
+</div>
+
+<!-- ============ MARKETING PAGE ============ -->
+<div id="page-marketing" class="page-sec admin-only hidden max-w-lg mx-auto pt-20 lg:pt-4 px-4 space-y-4 pb-28">
+    <div class="flex items-center justify-between">
+        <h2 class="font-display font-800 text-2xl">Marketing</h2>
+        <button onclick="openMarketingModal()" class="btn-green flex items-center gap-2 px-4 py-2.5 text-sm"><i class="fas fa-plus"></i> Add Banner</button>
+    </div>
+    <p class="text-sm text-gray-500">Create banners, promotions, and ads that appear at the top of your store.</p>
+    <div id="marketing-list" class="space-y-3"></div>
+</div>
+
+<!-- ============ CUSTOMERS PAGE ============ -->
+<div id="page-customers" class="page-sec admin-only hidden max-w-lg mx-auto pt-20 lg:pt-4 px-4 space-y-4 pb-28">
+    <h2 class="font-display font-800 text-2xl">Customers</h2>
+    <div class="card p-4 space-y-3">
+        <h3 class="font-bold text-sm text-gray-800 flex items-center gap-2"><i class="fas fa-paper-plane text-green-500"></i> Bulk Message</h3>
+        <textarea id="bulk-msg" class="form-input resize-none" rows="3" placeholder="Type your promotion message..."></textarea>
+        <div class="grid grid-cols-2 gap-2">
+            <button onclick="sendBulkWhatsApp()" class="btn-wa py-2.5 text-sm flex items-center justify-center gap-2 rounded-2xl font-700"><i class="fab fa-whatsapp"></i> Bulk WhatsApp</button>
+            <button onclick="sendBulkEmail()" class="py-2.5 text-sm flex items-center justify-center gap-2 rounded-2xl font-700 bg-blue-600 text-white hover:bg-blue-700 transition-all"><i class="fas fa-envelope"></i> Bulk Email</button>
         </div>
     </div>
+    <div id="customers-list" class="space-y-2.5"></div>
+</div>
+
+<!-- ============ SETTINGS PAGE ============ -->
+<main id="page-settings" class="page-sec admin-only hidden max-w-lg mx-auto pt-20 lg:pt-4 px-4 space-y-5 pb-28">
+    <h2 class="font-display font-800 text-2xl text-gray-900">Settings</h2>
 
     <!-- Store Settings -->
     <div id="store-settings-section" class="card p-5 space-y-4">
-        <h3 class="font-bold text-gray-800 flex items-center gap-2 text-sm">
-            <i class="fas fa-store text-green-500"></i> Store Settings
-            <span class="text-xs text-green-600 font-normal ml-auto">Saved to Firebase</span>
-        </h3>
+        <h3 class="font-bold text-gray-800 flex items-center gap-2 text-sm"><i class="fas fa-store text-green-500"></i> Store Settings <span class="text-xs text-green-600 font-normal ml-auto">Saved to Firebase</span></h3>
         <div>
             <label class="text-xs font-700 text-gray-500 uppercase tracking-wide mb-1.5 block">Store Name</label>
-            <div class="flex gap-2">
-                <input type="text" id="admin-store-name" class="form-input flex-1">
-                <button onclick="saveStoreName()" class="btn-green px-4 py-2 text-sm flex-shrink-0"><i class="fas fa-save"></i></button>
-            </div>
+            <div class="flex gap-2"><input type="text" id="admin-store-name" class="form-input flex-1"><button onclick="saveStoreName()" class="btn-green px-4 py-2 text-sm flex-shrink-0"><i class="fas fa-save"></i></button></div>
         </div>
         <div>
-            <label class="text-xs font-700 text-gray-500 uppercase tracking-wide mb-1.5 block">
-                <i class="fab fa-whatsapp text-green-500"></i> WhatsApp Number
-            </label>
-            <div class="flex gap-2">
-                <input type="text" id="admin-whatsapp" class="form-input flex-1" placeholder="252xxxxxxxxx">
-                <button onclick="saveWhatsApp()" class="btn-green px-4 py-2 text-sm flex-shrink-0"><i class="fas fa-save"></i></button>
-            </div>
+            <label class="text-xs font-700 text-gray-500 uppercase tracking-wide mb-1.5 block"><i class="fab fa-whatsapp text-green-500"></i> WhatsApp Number</label>
+            <div class="flex gap-2"><input type="text" id="admin-whatsapp" class="form-input flex-1" placeholder="252xxxxxxxxx"><button onclick="saveWhatsApp()" class="btn-green px-4 py-2 text-sm flex-shrink-0"><i class="fas fa-save"></i></button></div>
             <p class="text-xs text-gray-400 mt-1">Format: 252xxxxxxxx (no + or spaces)</p>
         </div>
         <div>
             <label class="text-xs font-700 text-gray-500 uppercase tracking-wide mb-1.5 block">Currency</label>
             <select id="admin-currency" onchange="saveCurrency()" class="form-input">
-                <option value="$">USD ($)</option>
-                <option value="€">EUR (€)</option>
-                <option value="£">GBP (£)</option>
-                <option value="SOS">SOS (Sh)</option>
+                <option value="$">USD ($)</option><option value="€">EUR (€)</option><option value="£">GBP (£)</option><option value="SOS">SOS (Sh)</option>
             </select>
         </div>
         <div>
             <label class="text-xs font-700 text-gray-500 uppercase tracking-wide mb-1.5 block">Admin Password</label>
-            <div class="flex gap-2">
-                <input type="password" id="admin-new-password" class="form-input flex-1" placeholder="New password">
-                <button onclick="changePassword()" class="btn-green px-4 py-2 text-sm flex-shrink-0"><i class="fas fa-key"></i></button>
-            </div>
+            <div class="flex gap-2"><input type="password" id="admin-new-password" class="form-input flex-1" placeholder="New password"><button onclick="changePassword()" class="btn-green px-4 py-2 text-sm flex-shrink-0"><i class="fas fa-key"></i></button></div>
         </div>
     </div>
 
     <!-- Shipping -->
     <div class="card p-5">
         <div class="flex items-center justify-between mb-4">
-            <h3 class="font-bold text-gray-800 text-sm flex items-center gap-2">
-                <i class="fas fa-shipping-fast text-green-500"></i> Shipping Prices
-            </h3>
+            <h3 class="font-bold text-gray-800 text-sm flex items-center gap-2"><i class="fas fa-shipping-fast text-green-500"></i> Delivery Cities & Prices</h3>
             <button onclick="openShippingModal()" class="text-xs font-600 text-green-600 hover:underline">Edit</button>
         </div>
-        <div class="space-y-2.5">
-            <div class="flex justify-between text-sm"><span class="text-gray-600">🏙️ Local (Mogadishu)</span><span id="ship-local-display" class="font-bold">$0</span></div>
-            <div class="flex justify-between text-sm"><span class="text-gray-600">🇸🇴 Regional (Somalia)</span><span id="ship-regional-display" class="font-bold">$0</span></div>
-            <div class="flex justify-between text-sm"><span class="text-gray-600">✈️ International</span><span id="ship-intl-display" class="font-bold">$0</span></div>
-        </div>
+        <div id="ship-display" class="space-y-1.5 text-sm"></div>
     </div>
 
     <!-- Payments -->
     <div class="card p-5">
         <div class="flex items-center justify-between mb-4">
-            <h3 class="font-bold text-gray-800 text-sm flex items-center gap-2">
-                <i class="fas fa-credit-card text-green-500"></i> Lacag Bixinta (Payments)
-            </h3>
+            <h3 class="font-bold text-gray-800 text-sm flex items-center gap-2"><i class="fas fa-credit-card text-green-500"></i> Lacag Bixinta (Payments)</h3>
         </div>
         <div id="admin-payment-list" class="space-y-2 mb-4"></div>
         <button onclick="openPaymentSetup()" class="w-full py-2.5 bg-gray-50 border border-dashed border-gray-300 rounded-xl text-sm font-600 text-gray-600 hover:bg-green-50 hover:border-green-300 hover:text-green-700 transition-all">
@@ -545,16 +745,10 @@
         </button>
     </div>
 
-    <!-- Products list -->
-    <div>
-        <h3 class="font-bold text-gray-800 mb-3">All Products <span class="text-xs text-green-500 font-normal">(live sync)</span></h3>
-        <div id="admin-product-list" class="space-y-2.5"></div>
-    </div>
-
-    <button onclick="exitAdmin()" class="w-full py-3 bg-gray-100 text-gray-600 rounded-2xl font-600 hover:bg-gray-200 transition-all flex items-center justify-center gap-2">
-        <i class="fas fa-sign-out-alt"></i> Exit Admin Mode
-    </button>
+    <button onclick="exitAdmin()" class="w-full py-3 bg-gray-100 text-gray-600 rounded-2xl font-600 hover:bg-gray-200 flex items-center justify-center gap-2"><i class="fas fa-sign-out-alt"></i> Exit Admin Mode</button>
 </main>
+
+</div><!-- end main-content-wrap -->
 
 <!-- ============ CART DRAWER ============ -->
 <div id="cart-drawer" class="cart-overlay">
@@ -604,34 +798,54 @@
 <!-- PAYMENT MODAL -->
 <div id="payment-modal" class="modal-overlay" onclick="if(event.target===this)closePaymentModal()">
     <div class="modal-sheet slide-up">
-        <div class="text-center mb-5">
+        <div class="text-center mb-4">
             <div class="w-14 h-14 brand-gradient rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
                 <i class="fab fa-whatsapp text-white text-2xl"></i>
             </div>
             <h3 class="font-display font-800 text-xl text-gray-900">Dhamaystir Dalabka</h3>
             <p class="text-sm text-gray-400 mt-0.5">Complete your order</p>
         </div>
-        <div class="bg-gray-50 rounded-2xl p-4 mb-4 space-y-2.5">
+        <div class="bg-gray-50 rounded-2xl p-4 mb-4 space-y-3">
             <div class="flex justify-between text-sm"><span class="text-gray-500">Wadarta (Subtotal)</span><span id="pm-subtotal" class="font-bold">$0.00</span></div>
-            <div class="flex justify-between text-sm items-center">
-                <span class="text-gray-500">Shipping</span>
-                <select id="pm-shipping-select" onchange="calcPaymentTotal()" class="text-xs border border-gray-200 rounded-lg px-2 py-1 font-600 bg-white">
-                    <option value="local">🏙️ Local</option>
-                    <option value="regional">🇸🇴 Regional</option>
-                    <option value="international">✈️ International</option>
-                </select>
+            <div>
+                <p class="text-xs font-700 text-gray-500 mb-2">📍 Choose Delivery City</p>
+                <div id="city-picker" class="flex flex-wrap gap-2"></div>
             </div>
-            <div id="pm-shipping-line" class="flex justify-between text-sm"></div>
+            <div id="pm-shipping-line" class="flex justify-between text-sm hidden">
+                <span class="text-gray-500">Delivery</span><span id="pm-ship-val" class="font-600 text-green-600">$0</span>
+            </div>
+            <div id="free-delivery-badge" class="hidden text-xs text-green-600 font-700 flex items-center gap-1"><i class="fas fa-check-circle"></i> Free delivery applied!</div>
             <div class="border-t border-gray-200 pt-2.5 flex justify-between items-center">
                 <span class="font-bold text-base">TOTAL</span>
                 <span id="pm-total" class="font-display font-800 text-xl text-green-600">$0.00</span>
             </div>
         </div>
-        <p class="text-xs font-700 text-gray-400 uppercase tracking-widest mb-3">Choose Payment</p>
-        <div id="pm-methods-list" class="space-y-2.5 mb-5"></div>
-        <button id="pm-whatsapp-btn" onclick="proceedToWhatsApp()" disabled class="btn-wa w-full py-4 flex items-center justify-center gap-2 font-700">
-            <i class="fab fa-whatsapp text-xl"></i> Send Order via WhatsApp
-        </button>
+        <p class="text-xs font-700 text-gray-400 uppercase tracking-widest mb-3">Choose Payment Method</p>
+        <div id="pm-methods-list" class="space-y-2.5 mb-4"></div>
+
+        <!-- USSD section (shown when mobile money selected) -->
+        <div id="ussd-inline-section" class="hidden mb-4 space-y-3">
+            <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                <p class="text-xs font-700 text-gray-500 uppercase tracking-wide mb-2">📱 Dial This USSD Code</p>
+                <div class="ussd-inline" id="ussd-inline-code">*883*NUMBER*AMOUNT#</div>
+                <p class="text-xs text-gray-400 mt-2 text-center">Dial → Enter PIN → Come back here</p>
+            </div>
+            <button onclick="copyInlineUSSD()" class="w-full py-2.5 bg-gray-900 text-white rounded-xl text-sm font-700 flex items-center justify-center gap-2 hover:bg-gray-800 transition-colors">
+                <i class="fas fa-copy"></i> Copy USSD Code
+            </button>
+            <button onclick="markPaidAndSend()" class="btn-green w-full py-3.5 flex items-center justify-center gap-2 font-700">
+                <i class="fas fa-check-circle"></i> I Have Paid — Send Order via WhatsApp
+            </button>
+            <p class="text-xs text-center text-gray-400">📸 Please send payment screenshot in WhatsApp after ordering</p>
+        </div>
+
+        <!-- Direct send section (crypto / evoucher) -->
+        <div id="direct-send-section">
+            <button id="pm-whatsapp-btn" onclick="proceedToWhatsApp(false)" disabled class="btn-wa w-full py-4 flex items-center justify-center gap-2 font-700">
+                <i class="fab fa-whatsapp text-xl"></i> Send Order via WhatsApp
+            </button>
+            <p class="text-xs text-center text-gray-400 mt-2">📸 Please send payment screenshot in WhatsApp after ordering</p>
+        </div>
     </div>
 </div>
 
@@ -707,32 +921,50 @@
         <div class="space-y-4">
             <div class="pay-config border-blue-200 bg-blue-50">
                 <div class="flex items-center gap-2 font-bold text-blue-700 mb-3"><span class="text-xl">📱</span> ZAAD <span class="text-xs font-normal text-blue-500">(Telesom)</span></div>
-                <input type="text" id="setup-zaad" placeholder="ZAAD number (2526xxxxxxxx)" class="form-input text-sm">
+                <input type="text" id="setup-zaad" placeholder="ZAAD number (2526xxxxxxxx)" class="form-input text-sm" autocomplete="off">
                 <p class="text-xs text-blue-400 mt-1.5">USSD: *883*NUMBER*AMOUNT#</p>
             </div>
             <div class="pay-config border-orange-200 bg-orange-50">
                 <div class="flex items-center gap-2 font-bold text-orange-700 mb-3"><span class="text-xl">📱</span> SAHAL <span class="text-xs font-normal text-orange-500">(Somtel)</span></div>
-                <input type="text" id="setup-sahal" placeholder="SAHAL number" class="form-input text-sm">
+                <input type="text" id="setup-sahal" placeholder="SAHAL number" class="form-input text-sm" autocomplete="off">
                 <p class="text-xs text-orange-400 mt-1.5">USSD: *884*NUMBER*AMOUNT#</p>
             </div>
             <div class="pay-config border-red-200 bg-red-50">
                 <div class="flex items-center gap-2 font-bold text-red-700 mb-3"><span class="text-xl">📱</span> E-DAHAB <span class="text-xs font-normal text-red-500">(Dahabshiil)</span></div>
-                <input type="text" id="setup-edahab" placeholder="E-DAHAB number" class="form-input text-sm">
+                <input type="text" id="setup-edahab" placeholder="E-DAHAB number" class="form-input text-sm" autocomplete="off">
                 <p class="text-xs text-red-400 mt-1.5">USSD: *113*NUMBER*AMOUNT#</p>
             </div>
             <div class="pay-config border-purple-200 bg-purple-50">
                 <div class="flex items-center gap-2 font-bold text-purple-700 mb-3"><span class="text-xl">🎁</span> EVoucher</div>
-                <input type="text" id="setup-evoucher" placeholder="EVoucher number" class="form-input text-sm">
+                <input type="text" id="setup-evoucher" placeholder="EVoucher number" class="form-input text-sm" autocomplete="off">
             </div>
             <div class="pay-config border-yellow-200 bg-yellow-50">
-                <div class="flex items-center gap-2 font-bold text-yellow-700 mb-3"><span class="text-xl">₿</span> Cryptocurrency</div>
-                <select id="setup-crypto-type" class="form-input text-sm mb-2">
-                    <option value="USDT">USDT (Tether)</option>
-                    <option value="BTC">Bitcoin (BTC)</option>
-                    <option value="ETH">Ethereum (ETH)</option>
-                </select>
-                <input type="text" id="setup-crypto-addr" placeholder="Wallet address" class="form-input text-sm">
-                <label class="flex items-center gap-2 mt-2 cursor-pointer">
+                <div class="flex items-center gap-2 font-bold text-yellow-700 mb-1"><span class="text-xl">₿</span> Cryptocurrency</div>
+                <p class="text-xs text-yellow-600 mb-3">3 fastest & cheapest networks</p>
+                <div class="space-y-3">
+                    <div class="bg-white rounded-xl p-3 border border-yellow-100">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-700 text-sm">USDT — TRC-20</span>
+                            <span class="net-badge bg-green-100 text-green-800">Fastest · ~$0.01</span>
+                        </div>
+                        <input type="text" id="setup-crypto-trc20" placeholder="TRC-20 address (T...)" class="form-input text-sm" autocomplete="off">
+                    </div>
+                    <div class="bg-white rounded-xl p-3 border border-yellow-100">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-700 text-sm">USDT — TON</span>
+                            <span class="net-badge bg-blue-100 text-blue-800">Cheapest · ~$0.001</span>
+                        </div>
+                        <input type="text" id="setup-crypto-ton" placeholder="TON address (UQ...)" class="form-input text-sm" autocomplete="off">
+                    </div>
+                    <div class="bg-white rounded-xl p-3 border border-yellow-100">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-700 text-sm">USDT — BEP-20</span>
+                            <span class="net-badge bg-yellow-100 text-yellow-800">Fast · ~$0.10</span>
+                        </div>
+                        <input type="text" id="setup-crypto-bep20" placeholder="BEP-20 address (0x...)" class="form-input text-sm" autocomplete="off">
+                    </div>
+                </div>
+                <label class="flex items-center gap-2 mt-3 cursor-pointer">
                     <input type="checkbox" id="setup-crypto-enabled" checked class="w-4 h-4 text-green-500 rounded">
                     <span class="text-xs text-yellow-700 font-600">Enable Crypto Payments</span>
                 </label>
@@ -744,17 +976,81 @@
 
 <!-- SHIPPING MODAL -->
 <div id="shipping-modal" class="modal-overlay center" onclick="if(event.target===this)closeShippingModal()">
-    <div class="modal-sheet pop-in">
-        <div class="flex justify-between items-center mb-5">
-            <h3 class="font-bold text-lg">Shipping Prices</h3>
+    <div class="modal-sheet pop-in" style="max-height:88vh;overflow-y:auto;">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="font-bold text-lg">Delivery Cities & Prices</h3>
             <button onclick="closeShippingModal()" class="p-2 hover:bg-gray-100 rounded-xl"><i class="fas fa-times text-gray-400"></i></button>
         </div>
-        <div class="space-y-4">
-            <div><label class="text-xs font-700 text-gray-500 uppercase tracking-wide mb-1.5 block">🏙️ Local (Mogadishu)</label><input type="number" id="ship-local-val" step="0.01" min="0" class="form-input" value="0"></div>
-            <div><label class="text-xs font-700 text-gray-500 uppercase tracking-wide mb-1.5 block">🇸🇴 Regional (Somalia)</label><input type="number" id="ship-regional-val" step="0.01" min="0" class="form-input" value="5"></div>
-            <div><label class="text-xs font-700 text-gray-500 uppercase tracking-wide mb-1.5 block">✈️ International</label><input type="number" id="ship-intl-val" step="0.01" min="0" class="form-input" value="15"></div>
+        <p class="text-xs text-gray-400 mb-3">Set a price per city. Enter 0 for free delivery.</p>
+        <div id="city-editor-list" class="space-y-2 mb-3"></div>
+        <div class="flex gap-2 mb-4">
+            <input type="text" id="new-city-input" class="form-input flex-1 text-sm" placeholder="City name..." autocomplete="off">
+            <input type="number" id="new-city-price" class="form-input w-24 text-sm" placeholder="$" min="0">
+            <button onclick="addCity()" class="btn-green px-3 text-sm flex-shrink-0"><i class="fas fa-plus"></i></button>
         </div>
-        <button onclick="saveShipping()" class="btn-green w-full py-3.5 font-700 mt-5">Save to Firebase</button>
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-3 mb-4">
+            <label class="text-xs font-700 text-blue-700 mb-2 block flex items-center gap-2"><i class="fas fa-tag"></i> Free Delivery Threshold (Optional)</label>
+            <div class="flex items-center gap-2">
+                <span class="text-sm text-blue-600">Orders above</span>
+                <input type="number" id="free-threshold" class="form-input w-24 text-sm" placeholder="e.g. 100" min="0">
+                <span class="text-sm text-blue-600">get free delivery</span>
+            </div>
+        </div>
+        <button onclick="saveShipping()" class="btn-green w-full py-3.5 font-700">Save to Firebase</button>
+    </div>
+</div>
+
+<!-- MARKETING MODAL -->
+<div id="marketing-modal" class="modal-overlay" onclick="if(event.target===this)closeMarketingModal()">
+    <div class="modal-sheet slide-up">
+        <div class="flex justify-between items-center mb-5">
+            <h3 class="font-bold text-lg">Add Promotion / Ad</h3>
+            <button onclick="closeMarketingModal()" class="p-2 hover:bg-gray-100 rounded-xl"><i class="fas fa-times text-gray-400"></i></button>
+        </div>
+        <div class="space-y-4">
+            <div>
+                <label class="text-xs font-700 text-gray-500 uppercase tracking-wide mb-2 block">Type</label>
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="setMktType('banner')" id="mtype-banner" class="py-2 rounded-xl text-xs font-700 border-2 border-green-500 bg-green-50 text-green-700">📢 Banner</button>
+                    <button onclick="setMktType('discount')" id="mtype-discount" class="py-2 rounded-xl text-xs font-700 border-2 border-gray-200 text-gray-500">🏷️ Discount</button>
+                    <button onclick="setMktType('ad')" id="mtype-ad" class="py-2 rounded-xl text-xs font-700 border-2 border-gray-200 text-gray-500">📣 Ad</button>
+                </div>
+            </div>
+            <div>
+                <label class="text-xs font-700 text-gray-500 uppercase tracking-wide mb-1.5 block">Message Text</label>
+                <textarea id="mkt-text" class="form-input resize-none" rows="2" placeholder="e.g. 🔥 $100+ orders get FREE delivery! | Dalabka $100+ geyn bilaash ah!" autocomplete="off" oninput="updateMktPreview()"></textarea>
+            </div>
+            <div>
+                <label class="text-xs font-700 text-gray-500 uppercase tracking-wide mb-1.5 block">Image URL (optional)</label>
+                <input type="url" id="mkt-image" class="form-input text-sm" placeholder="https://...">
+            </div>
+            <div>
+                <label class="text-xs font-700 text-gray-500 uppercase tracking-wide mb-2 block">Background Color</label>
+                <div class="flex gap-2 flex-wrap">
+                    <div onclick="setMktColor('#dcfce7','#166534')" class="w-9 h-9 rounded-xl cursor-pointer bg-green-100 border-3 border-green-500" style="border:3px solid #16a34a"></div>
+                    <div onclick="setMktColor('#fef3c7','#92400e')" class="w-9 h-9 rounded-xl cursor-pointer bg-yellow-100 border-2 border-gray-200"></div>
+                    <div onclick="setMktColor('#fee2e2','#991b1b')" class="w-9 h-9 rounded-xl cursor-pointer bg-red-100 border-2 border-gray-200"></div>
+                    <div onclick="setMktColor('#dbeafe','#1e3a8a')" class="w-9 h-9 rounded-xl cursor-pointer bg-blue-100 border-2 border-gray-200"></div>
+                    <div onclick="setMktColor('#f3e8ff','#6b21a8')" class="w-9 h-9 rounded-xl cursor-pointer bg-purple-100 border-2 border-gray-200"></div>
+                    <div onclick="setMktColor('#0f1923','#00e676')" class="w-9 h-9 rounded-xl cursor-pointer bg-gray-900 border-2 border-gray-200"></div>
+                </div>
+                <input type="hidden" id="mkt-bg" value="#dcfce7">
+                <input type="hidden" id="mkt-fg" value="#166534">
+            </div>
+            <div>
+                <label class="text-xs font-700 text-gray-500 uppercase tracking-wide mb-1.5 block">Link URL (optional — tapping banner opens this)</label>
+                <input type="url" id="mkt-link" class="form-input text-sm" placeholder="https://...">
+            </div>
+            <label class="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" id="mkt-marquee" class="w-4 h-4">
+                <span class="text-sm font-600 text-gray-700">🎬 Scrolling marquee (text slides across screen)</span>
+            </label>
+            <div>
+                <label class="text-xs font-700 text-gray-500 uppercase tracking-wide mb-1.5 block">Preview</label>
+                <div id="mkt-preview" class="mkt-banner" style="background:#dcfce7;color:#166534">Your banner preview</div>
+            </div>
+        </div>
+        <button onclick="saveMarketing()" class="btn-green w-full py-3.5 font-700 mt-5">Publish to Store</button>
     </div>
 </div>
 
@@ -779,41 +1075,72 @@
 // ===== STATE =====
 let ADMIN_PASSWORD = localStorage.getItem('store-admin-pw') || '6884433@@';
 let products = [];
+let customers = [];
+let marketingItems = [];
 let settings = { name: 'Somali Store', whatsapp: '252656884433', currency: '$' };
 let payments = {
     zaad:    { number: '', enabled: false },
     sahal:   { number: '', enabled: false },
     edahab:  { number: '', enabled: false },
     evoucher:{ number: '', enabled: false },
-    crypto:  { type: 'USDT', address: '', enabled: false }
+    crypto:  { trc20: '', ton: '', bep20: '', enabled: false }
 };
-let shipping = { local: 0, regional: 5, international: 15 };
-let cart = [];
-let currentCategory = 'all';
-let isAdmin = false;
-let selectedPayment = null;
-let currentUSSDCode = '';
-let unsubscribeProducts = null;
+let shipping = {
+    cities: [
+        {name:'Mogadishu',price:0},{name:'Hargeisa',price:5},{name:'Bosaso',price:7},
+        {name:'Kismayo',price:6},{name:'Garowe',price:7},{name:'Baidoa',price:5},
+        {name:'Marka',price:3},{name:'Jowhar',price:3},{name:'Beledweyne',price:6},
+        {name:'Afgooye',price:2},{name:'Berbera',price:8},{name:'Burco',price:7},
+        {name:'Jamaame',price:5},{name:'Dhuusamarreeb',price:6},{name:'Galkacyo',price:8},
+        {name:'Qardho',price:8},{name:'Luuq',price:7},{name:'Buur Hakaba',price:5},
+        {name:'Baydhabo',price:5},{name:'Laascaanood',price:8}
+    ],
+    freeThreshold: 0
+};
+let cart = [], currentCategory = 'all', isAdmin = false, selectedPayment = null;
+let currentUSSDCode = '', selectedCity = null, loggedInUser = null;
+let mktType = 'banner', mktBg = '#dcfce7', mktFg = '#166534';
 
-// ===== INIT =====
-window.addEventListener('firebase-ready', initApp);
+// ===== FIREBASE EXTENDED =====
+window.addEventListener('firebase-ready', () => {
+    // Extend FB object with new methods
+    const origFB = window.FB;
+    // We add customers + marketing via the same Firestore already imported
+    // They are accessed via window.FB which already has getFirestore bound
+    initApp();
+});
 
 async function initApp() {
     try {
         document.getElementById('loading-msg').textContent = 'Loading store data...';
-        // Load settings from Firebase
         const fbSettings = await window.FB.getSettings();
         if (fbSettings.store?.value) Object.assign(settings, fbSettings.store.value);
-        if (fbSettings.payments?.value) Object.assign(payments, fbSettings.payments.value);
-        if (fbSettings.shipping?.value) Object.assign(shipping, fbSettings.shipping.value);
+        if (fbSettings.payments?.value) {
+            const p = fbSettings.payments.value;
+            // Migrate old single-crypto format to new 3-network format
+            if (p.crypto && !p.crypto.trc20) p.crypto = { trc20:'', ton:'', bep20:'', enabled: p.crypto.enabled||false };
+            Object.assign(payments, p);
+        }
+        if (fbSettings.shipping?.value) {
+            const s = fbSettings.shipping.value;
+            // Migrate old local/regional/international format to cities
+            if (!s.cities) {
+                shipping.freeThreshold = s.freeThreshold||0;
+            } else {
+                Object.assign(shipping, s);
+            }
+        }
         if (fbSettings.adminPw?.value) ADMIN_PASSWORD = fbSettings.adminPw.value;
 
-        // Real-time product listener
-        unsubscribeProducts = window.FB.listenProducts(prods => {
+        window.FB.listenProducts(prods => {
             products = prods;
             renderShop();
             if (isAdmin) { renderAdminProducts(); updateAdminStats(); }
         });
+
+        // Load customers & marketing
+        loadCustomers();
+        loadMarketing();
 
         applySettings();
         document.getElementById('loading-screen').classList.add('hidden');
@@ -828,7 +1155,6 @@ async function initApp() {
         } else {
             document.getElementById('loading-msg').textContent = 'Connection error. Using offline mode.';
             document.getElementById('sync-dot').classList.add('error');
-            // Fallback to localStorage
             const lsSettings = JSON.parse(localStorage.getItem('store-settings') || '{}');
             Object.assign(settings, lsSettings);
             products = JSON.parse(localStorage.getItem('store-products') || '[]');
@@ -838,30 +1164,112 @@ async function initApp() {
     }
 }
 
+// ===== CUSTOMERS / MARKETING via raw Firestore calls =====
+async function loadCustomers() {
+    try {
+        const snap = await window.FB.getSettings(); // reuse existing db path trick
+        // Use listenProducts pattern but for customers collection
+        // Since FB object has listenProducts, we do a one-time fetch here
+        const resp = await fetch(`https://firestore.googleapis.com/v1/projects/${getProjectId()}/databases/(default)/documents/customers`);
+        if (resp.ok) {
+            const data = await resp.json();
+            if (data.documents) {
+                customers = data.documents.map(d => {
+                    const f = d.fields || {};
+                    return { id: d.name.split('/').pop(), name: f.name?.stringValue||'', phone: f.phone?.stringValue||'', email: f.email?.stringValue||'', uid: f.uid?.stringValue||'' };
+                });
+                if (isAdmin) { renderCustomers(); updateAdminStats(); }
+            }
+        }
+    } catch(e) { /* silent fail */ }
+}
+
+async function loadMarketing() {
+    try {
+        const resp = await fetch(`https://firestore.googleapis.com/v1/projects/${getProjectId()}/databases/(default)/documents/marketing`);
+        if (resp.ok) {
+            const data = await resp.json();
+            if (data.documents) {
+                marketingItems = data.documents.map(d => {
+                    const f = d.fields || {};
+                    return {
+                        id: d.name.split('/').pop(),
+                        type: f.type?.stringValue||'banner',
+                        text: f.text?.stringValue||'',
+                        image: f.image?.stringValue||'',
+                        bg: f.bg?.stringValue||'#dcfce7',
+                        fg: f.fg?.stringValue||'#166534',
+                        link: f.link?.stringValue||'',
+                        marquee: f.marquee?.booleanValue||false,
+                        active: f.active?.booleanValue!==false
+                    };
+                });
+                renderMarketingBanners();
+                if (isAdmin) renderMarketingAdmin();
+            }
+        }
+    } catch(e) { /* silent fail */ }
+}
+
+function getProjectId() {
+    // Extract project ID from the Firebase config that was already initialized
+    return 'to-go-so';
+}
+
+async function saveMarketingToFB(item) {
+    const fields = {};
+    for (const [k,v] of Object.entries(item)) {
+        if (typeof v === 'boolean') fields[k] = { booleanValue: v };
+        else fields[k] = { stringValue: String(v) };
+    }
+    await fetch(`https://firestore.googleapis.com/v1/projects/${getProjectId()}/databases/(default)/documents/marketing/${item.id}?updateMask.fieldPaths=type&updateMask.fieldPaths=text&updateMask.fieldPaths=image&updateMask.fieldPaths=bg&updateMask.fieldPaths=fg&updateMask.fieldPaths=link&updateMask.fieldPaths=marquee&updateMask.fieldPaths=active`, {
+        method: 'PATCH', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ fields })
+    });
+}
+
+async function deleteMarketingFromFB(id) {
+    await fetch(`https://firestore.googleapis.com/v1/projects/${getProjectId()}/databases/(default)/documents/marketing/${id}`, { method: 'DELETE' });
+}
+
+async function saveCustomerToFB(cust) {
+    const fields = { name:{stringValue:cust.name||''}, phone:{stringValue:cust.phone||''}, email:{stringValue:cust.email||''}, uid:{stringValue:cust.uid||''} };
+    await fetch(`https://firestore.googleapis.com/v1/projects/${getProjectId()}/databases/(default)/documents/customers/${cust.id}`, {
+        method: 'PATCH', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ fields })
+    });
+}
+
+// ===== APPLY SETTINGS =====
 function applySettings() {
     document.title = settings.name;
-    ['store-name-display','hero-store-name'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = settings.name;
+    ['store-name-display','hero-store-name','sidebar-store-name'].forEach(id => {
+        const el = document.getElementById(id); if (el) el.textContent = settings.name;
     });
-    const nameEl = document.getElementById('admin-store-name');
-    if (nameEl) nameEl.value = settings.name;
-    const waEl = document.getElementById('admin-whatsapp');
-    if (waEl) waEl.value = settings.whatsapp;
-    const curEl = document.getElementById('admin-currency');
-    if (curEl) curEl.value = settings.currency;
-    updateShippingDisplay();
+    const nameEl = document.getElementById('admin-store-name'); if (nameEl) nameEl.value = settings.name;
+    const waEl = document.getElementById('admin-whatsapp'); if (waEl) waEl.value = settings.whatsapp;
+    const curEl = document.getElementById('admin-currency'); if (curEl) curEl.value = settings.currency;
+    renderShippingDisplay();
     renderAdminPayments();
 }
 
-// ===== FIREBASE HELPERS =====
 async function fbSaveSetting(key, value) {
-    try {
-        await window.FB.saveSetting(key, value);
-    } catch (e) {
-        // fallback localStorage
-        localStorage.setItem('store-' + key, JSON.stringify(value));
-    }
+    try { await window.FB.saveSetting(key, value); }
+    catch (e) { localStorage.setItem('store-' + key, JSON.stringify(value)); }
+}
+
+// ===== PAGE NAVIGATION =====
+function showPage(page) {
+    document.querySelectorAll('.page-sec').forEach(el => el.classList.remove('active'));
+    const target = document.getElementById('page-' + page);
+    if (target) target.classList.add('active');
+    // Update sidebar
+    document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
+    const sl = document.getElementById('sl-' + page); if (sl) sl.classList.add('active');
+    // Update mobile nav
+    document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+    const mn = document.getElementById('mn-' + page); if (mn) mn.classList.add('active');
+    window.scrollTo(0,0);
 }
 
 // ===== ADMIN AUTH =====
@@ -886,39 +1294,41 @@ function checkAdminPassword() {
 
 function enableAdmin() {
     isAdmin = true;
-    document.getElementById('customer-view').classList.add('hidden');
-    document.getElementById('admin-view').classList.remove('hidden');
     document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
     document.querySelectorAll('.customer-only').forEach(el => el.classList.add('hidden'));
     document.getElementById('role-label').textContent = 'Admin Mode';
+    document.getElementById('sidebar-role').textContent = 'Admin Mode';
     document.getElementById('admin-badge').classList.remove('hidden');
     document.getElementById('lock-icon').className = 'fas fa-unlock text-green-500 text-sm';
+    document.getElementById('sidebar-lock-icon').className = 'fas fa-unlock text-green-500 text-sm';
+    document.getElementById('sidebar-admin-label').textContent = 'Exit Admin';
     document.getElementById('admin-menu-btn').classList.remove('hidden');
     document.getElementById('cart-btn').classList.add('hidden');
-    applySettings();
-    renderAdminProducts();
-    updateAdminStats();
+    document.getElementById('sidebar-admin-section').classList.add('show');
+    applySettings(); renderAdminProducts(); updateAdminStats();
+    loadCustomers(); loadMarketing();
+    showPage('dashboard');
     showToast('Welcome back, Admin! 👋');
 }
 
 function exitAdmin() {
     isAdmin = false;
-    document.getElementById('admin-view').classList.add('hidden');
-    document.getElementById('customer-view').classList.remove('hidden');
     document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
     document.querySelectorAll('.customer-only').forEach(el => el.classList.remove('hidden'));
     document.getElementById('role-label').textContent = 'Customer View';
+    document.getElementById('sidebar-role').textContent = 'Customer';
     document.getElementById('admin-badge').classList.add('hidden');
     document.getElementById('lock-icon').className = 'fas fa-lock text-gray-400 text-sm';
+    document.getElementById('sidebar-lock-icon').className = 'fas fa-lock text-gray-400 text-sm';
+    document.getElementById('sidebar-admin-label').textContent = 'Admin Login';
     document.getElementById('admin-menu-btn').classList.add('hidden');
     document.getElementById('cart-btn').classList.remove('hidden');
-    renderShop();
+    document.getElementById('sidebar-admin-section').classList.remove('show');
+    showPage('shop'); renderShop();
     showToast('Exited admin mode');
 }
 
-function scrollToSettings() {
-    document.getElementById('store-settings-section').scrollIntoView({ behavior: 'smooth' });
-}
+function scrollToSettings() { showPage('settings'); }
 
 async function changePassword() {
     const newPw = document.getElementById('admin-new-password').value.trim();
@@ -927,57 +1337,41 @@ async function changePassword() {
     await fbSaveSetting('adminPw', newPw);
     localStorage.setItem('store-admin-pw', newPw);
     document.getElementById('admin-new-password').value = '';
-    showToast('Password changed & saved to Firebase!');
+    showToast('Password changed & saved!');
 }
 
 // ===== SETTINGS =====
 async function saveStoreName() {
-    const name = document.getElementById('admin-store-name').value.trim();
-    if (!name) return;
-    settings.name = name;
-    await fbSaveSetting('store', settings);
-    applySettings();
-    showToast('Store name saved to Firebase!');
+    const name = document.getElementById('admin-store-name').value.trim(); if (!name) return;
+    settings.name = name; await fbSaveSetting('store', settings); applySettings(); showToast('Store name saved!');
 }
-
 async function saveWhatsApp() {
-    const num = document.getElementById('admin-whatsapp').value.trim();
-    if (!num) return;
-    settings.whatsapp = num;
-    await fbSaveSetting('store', settings);
-    showToast('WhatsApp saved to Firebase!');
+    const num = document.getElementById('admin-whatsapp').value.trim(); if (!num) return;
+    settings.whatsapp = num; await fbSaveSetting('store', settings); showToast('WhatsApp saved!');
 }
-
 async function saveCurrency() {
     settings.currency = document.getElementById('admin-currency').value;
-    await fbSaveSetting('store', settings);
-    renderShop(); renderAdminProducts();
-    showToast('Currency updated!');
+    await fbSaveSetting('store', settings); renderShop(); renderAdminProducts(); showToast('Currency updated!');
 }
-
 function fmt(price) { return settings.currency + parseFloat(price).toFixed(2); }
 
 // ===== SHOP =====
 function renderShop() {
-    const search = (document.getElementById('search-input')?.value || '').toLowerCase();
+    const search = (document.getElementById('search-input')?.value || '').toLowerCase().trim();
     const filtered = products.filter(p =>
         (currentCategory === 'all' || p.category === currentCategory) &&
         p.name.toLowerCase().includes(search) &&
         p.inStock !== false
     );
     document.getElementById('product-count').textContent = filtered.length + ' items';
-
     const grid = document.getElementById('products-grid');
     if (filtered.length === 0) {
-        grid.innerHTML = `<div class="col-span-2 text-center py-12 text-gray-400">
-            <div class="text-5xl mb-3 opacity-20">🛍️</div>
-            <p class="font-600">${products.length === 0 ? 'No products yet' : 'No results'}</p>
-        </div>`;
+        grid.innerHTML = `<div class="col-span-2 text-center py-12 text-gray-400"><div class="text-5xl mb-3 opacity-20">🛍️</div><p class="font-600">${products.length === 0 ? 'No products yet' : 'No results'}</p></div>`;
     } else {
         grid.innerHTML = filtered.map(p => `
             <div class="product-card" onclick="viewProduct('${p.id}')">
                 <div class="img-wrap">
-                    <img src="${p.image||'https://placehold.co/400x400/f3f4f6/9ca3af?text=No+Image'}"
+                    <img src="${p.image||'https://placehold.co/400x400/f3f4f6/9ca3af?text=No+Image'}" loading="lazy"
                          onerror="this.src='https://placehold.co/400x400/f3f4f6/9ca3af?text=No+Image'">
                     ${!p.inStock ? '<div class="oos-overlay"><span class="bg-red-500 text-white text-xs font-700 px-2 py-1 rounded-full">Out of Stock</span></div>' : ''}
                     <button class="add-btn absolute bottom-2 right-2" onclick="event.stopPropagation();addToCart('${p.id}')">
@@ -991,16 +1385,12 @@ function renderShop() {
                         <span class="text-xs text-gray-400 capitalize">${p.category}</span>
                     </div>
                 </div>
-            </div>
-        `).join('');
+            </div>`).join('');
     }
-
     const cats = ['all', ...new Set(products.map(p => p.category).filter(Boolean))];
     document.getElementById('categories-row').innerHTML = cats.map(c => `
-        <button onclick="setCategory('${c}')" class="cat-pill ${currentCategory===c?'active':''} capitalize">${c}</button>
-    `).join('');
+        <button onclick="setCategory('${c}')" class="cat-pill ${currentCategory===c?'active':''} capitalize">${c}</button>`).join('');
 }
-
 function setCategory(cat) { currentCategory = cat; renderShop(); }
 
 // ===== PRODUCT VIEW =====
@@ -1026,14 +1416,12 @@ function addToCart(id) {
     if (ex) ex.qty++; else cart.push({ ...p, qty: 1 });
     updateCartUI(); showToast('Added to cart! 🛍️');
 }
-
 function changeQty(id, delta) {
     const item = cart.find(x => x.id == id); if (!item) return;
     item.qty += delta;
     if (item.qty <= 0) cart = cart.filter(x => x.id != id);
     updateCartUI();
 }
-
 function removeFromCart(id) { cart = cart.filter(x => x.id != id); updateCartUI(); }
 
 function updateCartUI() {
@@ -1042,15 +1430,15 @@ function updateCartUI() {
     const badge = document.getElementById('cart-badge');
     badge.textContent = totalQty;
     totalQty > 0 ? (badge.classList.remove('hidden'), badge.classList.add('flex')) : (badge.classList.add('hidden'), badge.classList.remove('flex'));
+    const sbBadge = document.getElementById('sidebar-cart-badge');
+    if (sbBadge) { sbBadge.textContent = totalQty; totalQty > 0 ? sbBadge.classList.remove('hidden') : sbBadge.classList.add('hidden'); }
     document.getElementById('cart-item-count').textContent = totalQty;
-
     const list = document.getElementById('cart-items-list');
     list.innerHTML = cart.length === 0
         ? `<div class="text-center py-16 text-gray-400"><div class="text-5xl mb-3 opacity-20">🛒</div><p class="font-600">Cart is empty</p></div>`
         : cart.map(x => `
             <div class="flex gap-3 bg-gray-50 rounded-2xl p-3 items-center">
-                <img src="${x.image||''}" onerror="this.src='https://placehold.co/80x80/f3f4f6/9ca3af?text=?'"
-                     class="w-16 h-16 object-cover rounded-xl flex-shrink-0">
+                <img src="${x.image||''}" onerror="this.src='https://placehold.co/80x80/f3f4f6/9ca3af?text=?'" class="w-16 h-16 object-cover rounded-xl flex-shrink-0">
                 <div class="flex-1 min-w-0">
                     <p class="font-700 text-sm text-gray-900 truncate">${x.name}</p>
                     <p class="font-display font-800 text-green-600 text-sm">${fmt(x.price*x.qty)}</p>
@@ -1060,15 +1448,11 @@ function updateCartUI() {
                         <button onclick="changeQty('${x.id}',1)" class="w-7 h-7 bg-white border border-gray-200 rounded-lg flex items-center justify-center hover:bg-gray-100">+</button>
                     </div>
                 </div>
-                <button onclick="removeFromCart('${x.id}')" class="p-2 hover:bg-red-50 rounded-xl">
-                    <i class="fas fa-trash-alt text-red-400 text-sm"></i>
-                </button>
+                <button onclick="removeFromCart('${x.id}')" class="p-2 hover:bg-red-50 rounded-xl"><i class="fas fa-trash-alt text-red-400 text-sm"></i></button>
             </div>`).join('');
-
     document.getElementById('cart-subtotal-val').textContent = fmt(subtotal);
     document.getElementById('cart-total-val').textContent = fmt(subtotal);
 }
-
 function openCart()  { document.getElementById('cart-drawer').classList.add('open'); }
 function closeCart() { document.getElementById('cart-drawer').classList.remove('open'); }
 
@@ -1077,46 +1461,83 @@ function openPaymentModal() {
     if (!cart.length) return; closeCart();
     const subtotal = cart.reduce((s,x) => s+x.price*x.qty, 0);
     document.getElementById('pm-subtotal').textContent = fmt(subtotal);
-    calcPaymentTotal();
+    selectedCity = null; selectedPayment = null;
 
+    // City pills
+    const cp = document.getElementById('city-picker');
+    cp.innerHTML = shipping.cities.map(c =>
+        `<button class="city-pill" id="cpill-${c.name.replace(/\s/g,'_')}" onclick="selectCity('${c.name}',${c.price})">${c.name} <span class="opacity-60 text-xs">(${c.price===0?'Free':fmt(c.price)})</span></button>`
+    ).join('');
+
+    // Payment methods
     const container = document.getElementById('pm-methods-list');
-    const defs = [
-        { key:'zaad',     label:'ZAAD',     sub: payments.zaad.number,     icon:'📱' },
-        { key:'sahal',    label:'SAHAL',    sub: payments.sahal.number,    icon:'📱' },
-        { key:'edahab',   label:'E-DAHAB',  sub: payments.edahab.number,   icon:'📱' },
-        { key:'evoucher', label:'EVoucher', sub: payments.evoucher.number, icon:'🎁' },
-        { key:'crypto',   label:`${payments.crypto.type} Crypto`, sub:'Cryptocurrency', icon:'₿' }
-    ];
     let html = '';
-    defs.forEach(m => {
-        if (payments[m.key]?.enabled && (payments[m.key]?.number || payments[m.key]?.address)) {
-            html += `<div class="pay-card" id="pay-opt-${m.key}" onclick="selectPayment('${m.key}')">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <span class="text-2xl">${m.icon}</span>
-                        <div><div class="font-700 text-base">${m.label}</div><div class="text-xs text-gray-400">${m.sub}</div></div>
-                    </div>
-                    <div class="check-dot" id="check-${m.key}"></div>
-                </div>
-            </div>`;
-        }
-    });
+    if (payments.zaad.enabled && payments.zaad.number)
+        html += buildPayCard('zaad','ZAAD','📱',payments.zaad.number);
+    if (payments.sahal.enabled && payments.sahal.number)
+        html += buildPayCard('sahal','SAHAL','📱',payments.sahal.number);
+    if (payments.edahab.enabled && payments.edahab.number)
+        html += buildPayCard('edahab','E-DAHAB','📱',payments.edahab.number);
+    if (payments.evoucher.enabled && payments.evoucher.number)
+        html += buildPayCard('evoucher','EVoucher','🎁',payments.evoucher.number);
+    if (payments.crypto.enabled) {
+        if (payments.crypto.trc20) html += buildPayCard('crypto-trc20','USDT TRC-20','₿','Fastest · ~$0.01 fee');
+        if (payments.crypto.ton)   html += buildPayCard('crypto-ton','USDT TON','₿','Cheapest · ~$0.001 fee');
+        if (payments.crypto.bep20) html += buildPayCard('crypto-bep20','USDT BEP-20','₿','Fast · ~$0.10 fee');
+    }
     if (!html) html = `<div class="text-center py-6 text-sm text-gray-400"><i class="fas fa-exclamation-circle text-2xl block mb-2 opacity-30"></i>No payment methods configured.</div>`;
     container.innerHTML = html;
-    selectedPayment = null;
+
     document.getElementById('pm-whatsapp-btn').disabled = true;
+    document.getElementById('ussd-inline-section').classList.add('hidden');
+    document.getElementById('direct-send-section').classList.remove('hidden');
     document.getElementById('payment-modal').classList.add('active');
 }
 
-function closePaymentModal() { document.getElementById('payment-modal').classList.remove('active'); selectedPayment = null; }
+function buildPayCard(key, label, icon, sub) {
+    return `<div class="pay-card" id="pay-opt-${key}" onclick="selectPayment('${key}')">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl">${icon}</span>
+                <div><div class="font-700 text-base">${label}</div><div class="text-xs text-gray-400">${sub}</div></div>
+            </div>
+            <div class="check-dot" id="check-${key}"></div>
+        </div>
+    </div>`;
+}
+
+function selectCity(name, price) {
+    selectedCity = { name, price };
+    document.querySelectorAll('.city-pill').forEach(el => el.classList.remove('selected'));
+    document.getElementById('cpill-' + name.replace(/\s/g,'_'))?.classList.add('selected');
+    calcPaymentTotal();
+    if (selectedPayment && ['zaad','sahal','edahab'].includes(selectedPayment)) updateInlineUSSD();
+}
 
 function calcPaymentTotal() {
     const subtotal = cart.reduce((s,x) => s+x.price*x.qty, 0);
-    const type = document.getElementById('pm-shipping-select').value;
-    const cost = shipping[type] || 0;
-    const labels = { local:'🏙️ Local', regional:'🇸🇴 Regional', international:'✈️ International' };
-    document.getElementById('pm-shipping-line').innerHTML = `<span class="text-gray-500">${labels[type]}</span><span class="font-600">${fmt(cost)}</span>`;
-    document.getElementById('pm-total').textContent = fmt(subtotal + cost);
+    const cityPrice = selectedCity ? selectedCity.price : 0;
+    const threshold = shipping.freeThreshold || 0;
+    const freeDelivery = threshold > 0 && subtotal >= threshold;
+    const shipCost = (freeDelivery || !selectedCity) ? 0 : cityPrice;
+    const total = subtotal + (selectedCity ? shipCost : 0);
+
+    if (selectedCity) {
+        document.getElementById('pm-shipping-line').classList.remove('hidden');
+        document.getElementById('pm-ship-val').textContent = freeDelivery ? 'FREE' : fmt(shipCost);
+    } else {
+        document.getElementById('pm-shipping-line').classList.add('hidden');
+    }
+    document.getElementById('free-delivery-badge').classList.toggle('hidden', !(freeDelivery && selectedCity));
+    document.getElementById('pm-total').textContent = fmt(total);
+}
+
+function getTotal() {
+    const subtotal = cart.reduce((s,x) => s+x.price*x.qty, 0);
+    const cityPrice = selectedCity ? selectedCity.price : 0;
+    const threshold = shipping.freeThreshold || 0;
+    const freeDelivery = threshold > 0 && subtotal >= threshold;
+    return { subtotal, shipCost: freeDelivery||!selectedCity ? 0 : cityPrice, total: subtotal + (freeDelivery||!selectedCity ? 0 : cityPrice), freeDelivery };
 }
 
 function selectPayment(key) {
@@ -1126,45 +1547,84 @@ function selectPayment(key) {
     document.getElementById(`pay-opt-${key}`)?.classList.add('selected');
     const dot = document.getElementById(`check-${key}`);
     if (dot) { dot.innerHTML='<i class="fas fa-check text-white text-xs"></i>'; dot.style.background='var(--green)'; dot.style.borderColor='var(--green)'; }
-    document.getElementById('pm-whatsapp-btn').disabled = false;
+
+    const isMobileMoney = ['zaad','sahal','edahab'].includes(key);
+    if (isMobileMoney) {
+        updateInlineUSSD();
+        document.getElementById('ussd-inline-section').classList.remove('hidden');
+        document.getElementById('direct-send-section').classList.add('hidden');
+    } else {
+        document.getElementById('ussd-inline-section').classList.add('hidden');
+        document.getElementById('direct-send-section').classList.remove('hidden');
+        document.getElementById('pm-whatsapp-btn').disabled = false;
+    }
 }
 
-function proceedToWhatsApp() {
-    if (!selectedPayment || !cart.length) return;
-    const subtotal = cart.reduce((s,x) => s+x.price*x.qty, 0);
-    const type = document.getElementById('pm-shipping-select').value;
-    const cost = shipping[type] || 0;
-    const total = subtotal + cost;
-    const labels = { local:'Local (Mogadishu)', regional:'Regional (Somalia)', international:'International' };
-
-    let msg = `🛒 *DALAB CUSUB - NEW ORDER*\n━━━━━━━━━━━━━━━━━━━━\n*Alaabta (Items):*\n`;
-    cart.forEach(x => msg += `  • ${x.name} ×${x.qty} = ${fmt(x.price*x.qty)}\n`);
-    msg += `━━━━━━━━━━━━━━━━━━━━\nSubtotal: ${fmt(subtotal)}\nShipping (${labels[type]}): ${fmt(cost)}\n*💰 TOTAL: ${fmt(total)}*\n━━━━━━━━━━━━━━━━━━━━\n`;
-
-    const m = payments[selectedPayment];
-    const ussdMap = { zaad:'*883', sahal:'*884', edahab:'*113' };
-    if (ussdMap[selectedPayment] && m.number) {
-        const ussd = `${ussdMap[selectedPayment]}*${m.number}*${Math.round(total)}#`;
-        currentUSSDCode = ussd;
-        msg += `💳 *${selectedPayment.toUpperCase()} Payment:*\nNumber: ${m.number}\nDial: \`${ussd}\`\n`;
-        setTimeout(() => showUSSDModal(ussd), 500);
-    } else if (selectedPayment === 'evoucher') {
-        msg += `🎁 *EVoucher Payment:*\nNumber: ${m.number}\nFadlan soo dir voucher-kaaga\n`;
-    } else if (selectedPayment === 'crypto') {
-        msg += `₿ *${m.type} Crypto:*\nAddress: \`${m.address}\`\nAmount: ${fmt(total)} equiv.\n`;
+function updateInlineUSSD() {
+    if (!selectedPayment || !['zaad','sahal','edahab'].includes(selectedPayment)) return;
+    const { total } = getTotal();
+    const ussdMap = { zaad: { prefix:'*883', num: payments.zaad.number }, sahal: { prefix:'*884', num: payments.sahal.number }, edahab: { prefix:'*113', num: payments.edahab.number } };
+    const m = ussdMap[selectedPayment];
+    if (m && m.num) {
+        currentUSSDCode = `${m.prefix}*${m.num}*${Math.round(total)}#`;
+        document.getElementById('ussd-inline-code').textContent = currentUSSDCode;
+        document.getElementById('ussd-code-text').textContent = currentUSSDCode;
     }
-    msg += `━━━━━━━━━━━━━━━━━━━━\n📍 *Goobta:* ________________\n📞 *Tel:* ________________\n\nMahadsanid! 🙏`;
+}
+
+function copyInlineUSSD() {
+    if (!currentUSSDCode) return;
+    navigator.clipboard.writeText(currentUSSDCode).then(() => showToast('USSD copied! Dial it now 📱'));
+}
+
+function markPaidAndSend() { proceedToWhatsApp(true); }
+
+function closePaymentModal() { document.getElementById('payment-modal').classList.remove('active'); selectedPayment = null; }
+
+function proceedToWhatsApp(paid = false) {
+    if (!selectedPayment || !cart.length) return;
+    const { subtotal, shipCost, total, freeDelivery } = getTotal();
+
+    let msg = `🛒 *DALAB CUSUB — NEW ORDER*\n━━━━━━━━━━━━━━━━━━━━\n*Alaabta (Items):*\n`;
+    cart.forEach(x => msg += `  • ${x.name} ×${x.qty} = ${fmt(x.price*x.qty)}\n`);
+    msg += `━━━━━━━━━━━━━━━━━━━━\nSubtotal: ${fmt(subtotal)}\n`;
+    if (selectedCity) msg += `Delivery (${selectedCity.name}): ${freeDelivery ? 'FREE 🎉' : fmt(shipCost)}\n`;
+    msg += `*💰 TOTAL: ${fmt(total)}*\n━━━━━━━━━━━━━━━━━━━━\n`;
+
+    const mobileMoney = { zaad:{ label:'ZAAD', prefix:'*883' }, sahal:{ label:'SAHAL', prefix:'*884' }, edahab:{ label:'E-DAHAB', prefix:'*113' } };
+    if (mobileMoney[selectedPayment]) {
+        const mm = mobileMoney[selectedPayment];
+        const num = payments[selectedPayment].number;
+        msg += `💳 *${mm.label} Payment:*\nNumber: ${num}\nUSSD: \`${currentUSSDCode}\`\n`;
+        msg += paid ? `✅ *Customer says payment was sent*\n📸 Please send payment screenshot in this chat\n`
+                    : `📸 Please send payment screenshot in this chat\n`;
+    } else if (selectedPayment === 'evoucher') {
+        msg += `🎁 *EVoucher Payment:*\nNumber: ${payments.evoucher.number}\n📸 Send voucher screenshot in this chat\n`;
+    } else if (selectedPayment === 'crypto-trc20') {
+        msg += `₿ *USDT TRC-20:*\nAddress: \`${payments.crypto.trc20}\`\n📸 Send transaction screenshot in this chat\n`;
+    } else if (selectedPayment === 'crypto-ton') {
+        msg += `₿ *USDT TON:*\nAddress: \`${payments.crypto.ton}\`\n📸 Send transaction screenshot in this chat\n`;
+    } else if (selectedPayment === 'crypto-bep20') {
+        msg += `₿ *USDT BEP-20:*\nAddress: \`${payments.crypto.bep20}\`\n📸 Send transaction screenshot in this chat\n`;
+    }
+
+    if (loggedInUser) {
+        msg += `━━━━━━━━━━━━━━━━━━━━\n👤 ${loggedInUser.name}\n📞 ${loggedInUser.phone}\n`;
+    } else {
+        msg += `━━━━━━━━━━━━━━━━━━━━\n📍 *Goobta:* ________________\n📞 *Tel:* ________________\n`;
+    }
+    msg += `\nMahadsanid! 🙏`;
 
     window.open(`https://wa.me/${settings.whatsapp}?text=${encodeURIComponent(msg)}`, '_blank');
     cart = []; updateCartUI(); closePaymentModal(); showToast('Order sent! ✅');
 }
 
-// ===== USSD =====
+// ===== USSD MODAL (kept for desktop) =====
 function showUSSDModal(code) { document.getElementById('ussd-code-text').textContent = code; document.getElementById('ussd-modal').classList.add('active'); }
 function closeUSSD() { document.getElementById('ussd-modal').classList.remove('active'); }
 function copyUSSD() { navigator.clipboard.writeText(currentUSSDCode).then(() => showToast('USSD code copied!')); }
 
-// ===== PRODUCT CRUD (Firebase) =====
+// ===== PRODUCT CRUD =====
 function showAddModal() {
     document.getElementById('edit-product-id').value = '';
     document.getElementById('product-modal-title').textContent = 'Add Product';
@@ -1191,7 +1651,6 @@ function editProduct(id) {
     document.getElementById('product-img-preview').src = p.image || 'https://placehold.co/400x400/f3f4f6/9ca3af?text=No+Image';
     document.getElementById('product-modal').classList.add('active');
 }
-
 function closeProductModal() { document.getElementById('product-modal').classList.remove('active'); }
 
 function loadProductImage(input) {
@@ -1211,44 +1670,35 @@ async function saveProduct(e) {
     try {
         const editId = document.getElementById('edit-product-id').value;
         const data = {
-            id:          editId || String(Date.now()),
-            name:        document.getElementById('p-name').value.trim(),
-            price:       parseFloat(document.getElementById('p-price').value),
-            category:    document.getElementById('p-category').value,
+            id: editId || String(Date.now()),
+            name: document.getElementById('p-name').value.trim(),
+            price: parseFloat(document.getElementById('p-price').value),
+            category: document.getElementById('p-category').value,
             description: document.getElementById('p-desc').value.trim(),
-            image:       document.getElementById('product-img-url').value || 'https://placehold.co/400x400/f3f4f6/9ca3af?text=No+Image',
-            inStock:     document.getElementById('p-instock').checked
+            image: document.getElementById('product-img-url').value || 'https://placehold.co/400x400/f3f4f6/9ca3af?text=No+Image',
+            inStock: document.getElementById('p-instock').checked
         };
         await window.FB.saveProduct(data);
         closeProductModal();
-        showToast(editId ? 'Product updated in Firebase! ✅' : 'Product added to Firebase! 🎉');
-    } catch (err) {
-        console.error(err);
-        showToast('Error saving. Check Firebase config.');
-    }
+        showToast(editId ? 'Product updated! ✅' : 'Product added! 🎉');
+    } catch (err) { console.error(err); showToast('Error saving. Check Firebase.'); }
     btn.textContent = 'Save to Firebase'; btn.disabled = false;
 }
 
 async function deleteProduct(id) {
-    if (!confirm('Delete this product from Firebase?')) return;
-    try {
-        await window.FB.deleteProduct(id);
-        showToast('Product deleted');
-    } catch { showToast('Error deleting product'); }
+    if (!confirm('Delete this product?')) return;
+    try { await window.FB.deleteProduct(id); showToast('Product deleted'); }
+    catch { showToast('Error deleting product'); }
 }
 
 function renderAdminProducts() {
     const list = document.getElementById('admin-product-list');
     if (!products.length) {
-        list.innerHTML = `<div class="text-center py-8 text-gray-400 border-2 border-dashed border-gray-200 rounded-2xl">
-            <i class="fas fa-box-open text-3xl mb-2 opacity-30 block"></i>
-            <p class="text-sm font-600">No products yet</p>
-        </div>`; return;
+        list.innerHTML = `<div class="text-center py-8 text-gray-400 border-2 border-dashed border-gray-200 rounded-2xl"><i class="fas fa-box-open text-3xl mb-2 opacity-30 block"></i><p class="text-sm font-600">No products yet</p></div>`; return;
     }
     list.innerHTML = products.map(p => `
         <div class="admin-row">
-            <img src="${p.image||''}" onerror="this.src='https://placehold.co/64x64/f3f4f6/9ca3af?text=?'"
-                 class="w-14 h-14 object-cover rounded-xl flex-shrink-0">
+            <img src="${p.image||''}" onerror="this.src='https://placehold.co/64x64/f3f4f6/9ca3af?text=?'" class="w-14 h-14 object-cover rounded-xl flex-shrink-0">
             <div class="flex-1 min-w-0">
                 <p class="font-700 text-sm text-gray-900 truncate">${p.name}</p>
                 <p class="font-display font-800 text-green-600 text-sm">${fmt(p.price)}</p>
@@ -1258,20 +1708,17 @@ function renderAdminProducts() {
                 </div>
             </div>
             <div class="flex gap-1">
-                <button onclick="editProduct('${p.id}')" class="w-9 h-9 flex items-center justify-center text-blue-500 hover:bg-blue-50 rounded-xl">
-                    <i class="fas fa-pen text-sm"></i>
-                </button>
-                <button onclick="deleteProduct('${p.id}')" class="w-9 h-9 flex items-center justify-center text-red-400 hover:bg-red-50 rounded-xl">
-                    <i class="fas fa-trash text-sm"></i>
-                </button>
+                <button onclick="editProduct('${p.id}')" class="w-9 h-9 flex items-center justify-center text-blue-500 hover:bg-blue-50 rounded-xl"><i class="fas fa-pen text-sm"></i></button>
+                <button onclick="deleteProduct('${p.id}')" class="w-9 h-9 flex items-center justify-center text-red-400 hover:bg-red-50 rounded-xl"><i class="fas fa-trash text-sm"></i></button>
             </div>
         </div>`).join('');
 }
 
 function updateAdminStats() {
-    document.getElementById('stat-products').textContent = products.length;
-    document.getElementById('stat-cats').textContent = new Set(products.map(p => p.category)).size;
-    document.getElementById('stat-active').textContent = products.filter(p => p.inStock !== false).length;
+    const sp = document.getElementById('stat-products'); if(sp) sp.textContent = products.length;
+    const sc = document.getElementById('stat-cats'); if(sc) sc.textContent = new Set(products.map(p => p.category)).size;
+    const sa = document.getElementById('stat-active'); if(sa) sa.textContent = products.filter(p => p.inStock !== false).length;
+    const scu = document.getElementById('stat-customers'); if(scu) scu.textContent = customers.length;
 }
 
 // ===== PAYMENT CONFIG =====
@@ -1280,8 +1727,9 @@ function openPaymentSetup() {
     document.getElementById('setup-sahal').value = payments.sahal.number||'';
     document.getElementById('setup-edahab').value = payments.edahab.number||'';
     document.getElementById('setup-evoucher').value = payments.evoucher.number||'';
-    document.getElementById('setup-crypto-type').value = payments.crypto.type||'USDT';
-    document.getElementById('setup-crypto-addr').value = payments.crypto.address||'';
+    document.getElementById('setup-crypto-trc20').value = payments.crypto.trc20||'';
+    document.getElementById('setup-crypto-ton').value = payments.crypto.ton||'';
+    document.getElementById('setup-crypto-bep20').value = payments.crypto.bep20||'';
     document.getElementById('setup-crypto-enabled').checked = payments.crypto.enabled;
     document.getElementById('payment-setup-modal').classList.add('active');
 }
@@ -1293,7 +1741,12 @@ async function savePaymentMethods() {
         sahal:   { number: document.getElementById('setup-sahal').value.trim(), enabled: !!document.getElementById('setup-sahal').value.trim() },
         edahab:  { number: document.getElementById('setup-edahab').value.trim(), enabled: !!document.getElementById('setup-edahab').value.trim() },
         evoucher:{ number: document.getElementById('setup-evoucher').value.trim(), enabled: !!document.getElementById('setup-evoucher').value.trim() },
-        crypto:  { type: document.getElementById('setup-crypto-type').value, address: document.getElementById('setup-crypto-addr').value.trim(), enabled: document.getElementById('setup-crypto-enabled').checked && !!document.getElementById('setup-crypto-addr').value.trim() }
+        crypto:  {
+            trc20:   document.getElementById('setup-crypto-trc20').value.trim(),
+            ton:     document.getElementById('setup-crypto-ton').value.trim(),
+            bep20:   document.getElementById('setup-crypto-bep20').value.trim(),
+            enabled: document.getElementById('setup-crypto-enabled').checked && !!(document.getElementById('setup-crypto-trc20').value.trim()||document.getElementById('setup-crypto-ton').value.trim()||document.getElementById('setup-crypto-bep20').value.trim())
+        }
     };
     await fbSaveSetting('payments', payments);
     closePaymentSetup(); renderAdminPayments(); showToast('Payments saved to Firebase!');
@@ -1301,40 +1754,335 @@ async function savePaymentMethods() {
 
 function renderAdminPayments() {
     const list = document.getElementById('admin-payment-list');
+    if (!list) return;
     const active = [];
     if (payments.zaad.enabled)     active.push({ label:'ZAAD',    icon:'📱', color:'bg-blue-100 text-blue-700' });
     if (payments.sahal.enabled)    active.push({ label:'SAHAL',   icon:'📱', color:'bg-orange-100 text-orange-700' });
     if (payments.edahab.enabled)   active.push({ label:'E-DAHAB', icon:'📱', color:'bg-red-100 text-red-700' });
     if (payments.evoucher.enabled) active.push({ label:'EVoucher',icon:'🎁', color:'bg-purple-100 text-purple-700' });
-    if (payments.crypto.enabled)   active.push({ label:payments.crypto.type, icon:'₿', color:'bg-yellow-100 text-yellow-700' });
+    if (payments.crypto.enabled) {
+        if (payments.crypto.trc20) active.push({ label:'USDT TRC-20', icon:'₿', color:'bg-yellow-100 text-yellow-700' });
+        if (payments.crypto.ton)   active.push({ label:'USDT TON',   icon:'₿', color:'bg-yellow-100 text-yellow-700' });
+        if (payments.crypto.bep20) active.push({ label:'USDT BEP-20',icon:'₿', color:'bg-yellow-100 text-yellow-700' });
+    }
     list.innerHTML = active.length
         ? active.map(m => `<div class="flex items-center gap-3 py-2"><span>${m.icon}</span><span class="font-600 text-sm">${m.label}</span><span class="ml-auto text-xs font-700 px-2.5 py-0.5 rounded-full ${m.color}">Active</span></div>`).join('')
         : '<p class="text-sm text-gray-400">No payment methods configured</p>';
 }
 
-// ===== SHIPPING =====
+// ===== SHIPPING (City-based) =====
 function openShippingModal() {
-    document.getElementById('ship-local-val').value = shipping.local;
-    document.getElementById('ship-regional-val').value = shipping.regional;
-    document.getElementById('ship-intl-val').value = shipping.international;
+    renderCityEditor();
+    document.getElementById('free-threshold').value = shipping.freeThreshold || 0;
     document.getElementById('shipping-modal').classList.add('active');
 }
 function closeShippingModal() { document.getElementById('shipping-modal').classList.remove('active'); }
 
+function renderCityEditor() {
+    document.getElementById('city-editor-list').innerHTML = shipping.cities.map((c,i) => `
+        <div class="flex items-center gap-2">
+            <input value="${c.name}" class="form-input flex-1 text-sm" onchange="shipping.cities[${i}].name=this.value" autocomplete="off">
+            <input type="number" value="${c.price}" class="form-input w-20 text-sm" min="0" onchange="shipping.cities[${i}].price=parseFloat(this.value)||0">
+            <button onclick="removeCity(${i})" class="w-8 h-8 flex items-center justify-center text-red-400 hover:bg-red-50 rounded-xl flex-shrink-0"><i class="fas fa-times text-xs"></i></button>
+        </div>`).join('');
+}
+function addCity() {
+    const name = document.getElementById('new-city-input').value.trim();
+    const price = parseFloat(document.getElementById('new-city-price').value) || 0;
+    if (!name) return;
+    shipping.cities.push({ name, price });
+    document.getElementById('new-city-input').value = '';
+    document.getElementById('new-city-price').value = '';
+    renderCityEditor();
+}
+function removeCity(i) { shipping.cities.splice(i,1); renderCityEditor(); }
+
 async function saveShipping() {
-    shipping = {
-        local:         parseFloat(document.getElementById('ship-local-val').value)||0,
-        regional:      parseFloat(document.getElementById('ship-regional-val').value)||0,
-        international: parseFloat(document.getElementById('ship-intl-val').value)||0
-    };
+    shipping.freeThreshold = parseFloat(document.getElementById('free-threshold').value) || 0;
     await fbSaveSetting('shipping', shipping);
-    closeShippingModal(); updateShippingDisplay(); showToast('Shipping saved to Firebase!');
+    closeShippingModal(); renderShippingDisplay(); showToast('Shipping saved to Firebase!');
 }
 
-function updateShippingDisplay() {
-    document.getElementById('ship-local-display').textContent = fmt(shipping.local);
-    document.getElementById('ship-regional-display').textContent = fmt(shipping.regional);
-    document.getElementById('ship-intl-display').textContent = fmt(shipping.international);
+function renderShippingDisplay() {
+    const d = document.getElementById('ship-display'); if (!d) return;
+    d.innerHTML = shipping.cities.slice(0,6).map(c =>
+        `<div class="flex justify-between"><span class="text-gray-600">${c.name}</span><span class="font-bold">${c.price===0?'Free':fmt(c.price)}</span></div>`
+    ).join('') + (shipping.cities.length > 6 ? `<p class="text-xs text-gray-400 mt-1">+${shipping.cities.length-6} more cities</p>` : '')
+    + (shipping.freeThreshold > 0 ? `<p class="text-xs text-green-600 font-600 mt-1">✓ Free delivery on orders above ${fmt(shipping.freeThreshold)}</p>` : '');
+}
+
+// ===== MARKETING =====
+function openMarketingModal() {
+    mktType='banner'; mktBg='#dcfce7'; mktFg='#166534';
+    document.getElementById('mkt-text').value='';
+    document.getElementById('mkt-image').value='';
+    document.getElementById('mkt-link').value='';
+    document.getElementById('mkt-marquee').checked=false;
+    document.getElementById('mkt-preview').style.background='#dcfce7';
+    document.getElementById('mkt-preview').style.color='#166534';
+    document.getElementById('mkt-preview').textContent='Your banner preview';
+    ['banner','discount','ad'].forEach(t => {
+        const btn = document.getElementById('mtype-'+t);
+        btn.className = `py-2 rounded-xl text-xs font-700 border-2 ${t==='banner'?'border-green-500 bg-green-50 text-green-700':'border-gray-200 text-gray-500'}`;
+    });
+    document.getElementById('marketing-modal').classList.add('active');
+}
+function closeMarketingModal() { document.getElementById('marketing-modal').classList.remove('active'); }
+
+function setMktType(t) {
+    mktType = t;
+    ['banner','discount','ad'].forEach(id => {
+        const btn = document.getElementById('mtype-'+id);
+        btn.className = `py-2 rounded-xl text-xs font-700 border-2 ${id===t?'border-green-500 bg-green-50 text-green-700':'border-gray-200 text-gray-500'}`;
+    });
+}
+function setMktColor(bg, fg) {
+    mktBg = bg; mktFg = fg;
+    document.getElementById('mkt-bg').value = bg;
+    document.getElementById('mkt-fg').value = fg;
+    updateMktPreview();
+}
+function updateMktPreview() {
+    const text = document.getElementById('mkt-text').value || 'Your banner preview';
+    const p = document.getElementById('mkt-preview');
+    p.style.background = mktBg; p.style.color = mktFg; p.textContent = text;
+}
+
+async function saveMarketing() {
+    const text = document.getElementById('mkt-text').value.trim();
+    if (!text) return showToast('Please write a message');
+    const item = {
+        id: String(Date.now()), type: mktType, text,
+        image: document.getElementById('mkt-image').value || '',
+        bg: mktBg, fg: mktFg,
+        link: document.getElementById('mkt-link').value || '',
+        marquee: document.getElementById('mkt-marquee').checked,
+        active: true
+    };
+    try {
+        await saveMarketingToFB(item);
+        marketingItems.push(item);
+        renderMarketingBanners();
+        renderMarketingAdmin();
+        closeMarketingModal();
+        showToast('Promotion published! 🎉');
+    } catch(e) {
+        showToast('Saved locally (Firebase write error)');
+        marketingItems.push(item);
+        renderMarketingBanners(); renderMarketingAdmin(); closeMarketingModal();
+    }
+}
+
+async function deleteMarketing(id) {
+    if (!confirm('Delete this promotion?')) return;
+    try { await deleteMarketingFromFB(id); } catch(e) {}
+    marketingItems = marketingItems.filter(m => m.id !== id);
+    renderMarketingBanners(); renderMarketingAdmin();
+    showToast('Promotion removed');
+}
+
+function renderMarketingBanners() {
+    const container = document.getElementById('marketing-banners');
+    const active = marketingItems.filter(m => m.active !== false);
+    if (!active.length) { container.innerHTML = ''; return; }
+    container.innerHTML = active.map(m => {
+        const click = m.link ? `onclick="window.open('${m.link}','_blank')" style="cursor:pointer"` : '';
+        if (m.image) {
+            return `<div class="rounded-2xl overflow-hidden" ${click}>
+                <img src="${m.image}" class="w-full object-cover" style="max-height:160px">
+                ${m.text ? `<div class="mkt-banner" style="background:${m.bg};color:${m.fg}">${m.text}</div>` : ''}
+            </div>`;
+        }
+        if (m.marquee) {
+            return `<div class="marquee-wrap mkt-banner rounded-2xl" style="background:${m.bg};color:${m.fg}" ${click}>
+                <span class="marquee-text font-700">${m.text}</span>
+            </div>`;
+        }
+        return `<div class="mkt-banner rounded-2xl" style="background:${m.bg};color:${m.fg}" ${click}>${m.text}</div>`;
+    }).join('');
+}
+
+function renderMarketingAdmin() {
+    const list = document.getElementById('marketing-list');
+    if (!list) return;
+    if (!marketingItems.length) {
+        list.innerHTML = `<div class="text-center py-8 text-gray-400 border-2 border-dashed border-gray-200 rounded-2xl"><i class="fas fa-bullhorn text-3xl mb-2 opacity-30 block"></i><p class="text-sm">No promotions yet</p></div>`; return;
+    }
+    list.innerHTML = marketingItems.map(m => `
+        <div class="card p-4">
+            <div class="flex items-start justify-between gap-3">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-xs font-700 px-2 py-0.5 rounded-full capitalize" style="background:${m.bg};color:${m.fg}">${m.type}</span>
+                        ${m.marquee ? '<span class="text-xs text-gray-400">📜 Marquee</span>' : ''}
+                    </div>
+                    <p class="text-sm font-600 text-gray-800 truncate">${m.text}</p>
+                    ${m.image ? '<p class="text-xs text-gray-400 mt-0.5">📷 Has image</p>' : ''}
+                </div>
+                <button onclick="deleteMarketing('${m.id}')" class="w-9 h-9 flex items-center justify-center text-red-400 hover:bg-red-50 rounded-xl flex-shrink-0">
+                    <i class="fas fa-trash text-sm"></i>
+                </button>
+            </div>
+        </div>`).join('');
+}
+
+// ===== CUSTOMERS =====
+function renderCustomers() {
+    const list = document.getElementById('customers-list');
+    if (!list) return;
+    if (!customers.length) {
+        list.innerHTML = `<div class="text-center py-8 text-gray-400"><i class="fas fa-users text-3xl mb-2 opacity-30 block"></i><p class="text-sm">No registered customers yet</p></div>`; return;
+    }
+    list.innerHTML = customers.map(c => `
+        <div class="admin-row">
+            <div class="w-10 h-10 brand-gradient rounded-xl flex items-center justify-center flex-shrink-0 text-white font-700 text-sm">
+                ${(c.name||'?')[0].toUpperCase()}
+            </div>
+            <div class="flex-1 min-w-0">
+                <p class="font-700 text-sm text-gray-900 truncate">${c.name||'Unknown'}</p>
+                <p class="text-xs text-gray-500">${c.phone||''}</p>
+                <p class="text-xs text-gray-400">${c.email||''}</p>
+            </div>
+            <a href="https://wa.me/${(c.phone||'').replace(/\D/g,'')}" target="_blank"
+               class="w-9 h-9 flex items-center justify-center text-green-500 hover:bg-green-50 rounded-xl">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+        </div>`).join('');
+    updateAdminStats();
+}
+
+function sendBulkWhatsApp() {
+    const msg = document.getElementById('bulk-msg').value.trim();
+    if (!msg) return showToast('Please write a message first');
+    const phones = customers.map(c => (c.phone||'').replace(/\D/g,'')).filter(p => p.length > 5);
+    if (!phones.length) return showToast('No customer phone numbers found');
+    window.open(`https://wa.me/${phones[0]}?text=${encodeURIComponent(msg)}`, '_blank');
+    showToast(`Opened WhatsApp for ${phones.length} customers. Copy message for others.`);
+}
+
+function sendBulkEmail() {
+    const msg = document.getElementById('bulk-msg').value.trim();
+    if (!msg) return showToast('Please write a message first');
+    const emails = customers.map(c => c.email).filter(Boolean);
+    if (!emails.length) return showToast('No customer emails found');
+    window.open(`mailto:${emails.join(',')}?subject=${encodeURIComponent(settings.name+' — Special Offer')}&body=${encodeURIComponent(msg)}`, '_blank');
+    showToast(`Email opened for ${emails.length} customers`);
+}
+
+// ===== ACCOUNT / AUTH =====
+function switchAuthTab(tab) {
+    document.getElementById('auth-login').classList.toggle('hidden', tab !== 'login');
+    document.getElementById('auth-register').classList.toggle('hidden', tab !== 'register');
+    document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+    document.getElementById('tab-reg').classList.toggle('active', tab === 'register');
+}
+
+async function doRegister() {
+    const name  = document.getElementById('reg-name').value.trim();
+    const phone = document.getElementById('reg-phone').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
+    const pw    = document.getElementById('reg-pw').value;
+    const err   = document.getElementById('reg-err');
+    err.classList.add('hidden');
+    if (!name || !phone || !pw) { err.textContent = 'Name, phone and password are required'; err.classList.remove('hidden'); return; }
+    if (pw.length < 6) { err.textContent = 'Password must be at least 6 characters'; err.classList.remove('hidden'); return; }
+    // Store locally (Firebase Auth optional — store customer data in Firestore)
+    const cust = { id: String(Date.now()), name, phone, email };
+    try {
+        await saveCustomerToFB(cust);
+        customers.push(cust);
+    } catch(e) {}
+    loggedInUser = cust;
+    localStorage.setItem('loggedInUser', JSON.stringify(cust));
+    showLoggedIn(cust);
+    showToast('Account created! Welcome 🎉');
+}
+
+async function doLogin() {
+    const phone = document.getElementById('login-phone').value.trim();
+    const pw    = document.getElementById('login-pw').value;
+    const err   = document.getElementById('login-err');
+    err.classList.add('hidden');
+    // Simple lookup by phone
+    const found = customers.find(c => c.phone === phone || c.phone.replace(/\D/g,'') === phone.replace(/\D/g,''));
+    if (found) {
+        loggedInUser = found;
+        localStorage.setItem('loggedInUser', JSON.stringify(found));
+        showLoggedIn(found);
+        showToast('Welcome back, ' + found.name + '! 👋');
+    } else {
+        // Try stored session
+        const stored = localStorage.getItem('loggedInUser');
+        if (stored) {
+            loggedInUser = JSON.parse(stored);
+            showLoggedIn(loggedInUser);
+        } else {
+            err.textContent = 'Phone number not found. Please register first.';
+            err.classList.remove('hidden');
+        }
+    }
+}
+
+function doLogout() {
+    loggedInUser = null;
+    localStorage.removeItem('loggedInUser');
+    document.getElementById('profile-section').classList.add('hidden');
+    document.getElementById('auth-section').classList.remove('hidden');
+    showToast('Logged out');
+}
+
+function showLoggedIn(user) {
+    document.getElementById('auth-section').classList.add('hidden');
+    document.getElementById('profile-section').classList.remove('hidden');
+    document.getElementById('profile-name').textContent = user.name || '';
+    document.getElementById('profile-phone').textContent = user.phone || '';
+    document.getElementById('profile-email').textContent = user.email || '';
+}
+
+// Restore session on load
+window.addEventListener('firebase-ready', () => {
+    const stored = localStorage.getItem('loggedInUser');
+    if (stored) { try { loggedInUser = JSON.parse(stored); showLoggedIn(loggedInUser); } catch(e) {} }
+});
+
+// ===== CHATBOT =====
+const chatKnowledge = {
+    delivery:  { en: '📦 We deliver to all major Somali cities! Select your city at checkout to see the exact delivery price. Mogadishu is often free or very cheap.', so: 'Waxaan u dhoofinnaa dhammaan magaalooyinka Soomaaliya! Dooro magaaladaada markaad bixinayso si aad u aragto qiimaha.' },
+    payment:   { en: '💳 We accept ZAAD, SAHAL, E-DAHAB, EVoucher, and USDT Crypto (TRC-20, TON, BEP-20). After choosing mobile money you\'ll see a USSD code — just dial it and enter your PIN!', so: 'Waxaan aqbalnaa ZAAD, SAHAL, E-DAHAB, EVoucher, iyo Crypto. Lacag-bixinta telefoonka waxay muujisaa koodka USSD — kaliya waxaad gelin kartaa PIN-kaaga!' },
+    zaad:      { en: '📱 ZAAD payment: Select ZAAD → see USSD code like *883*NUMBER*AMOUNT# → dial it → enter ZAAD PIN → click "I Have Paid" → order sends to WhatsApp!', so: 'Bixinta ZAAD: Dooro ZAAD → waxaad arki doontaa kood sida *883*NAMBARKA*LACAGTA# → geli → ku geli PIN ZAAD → guji "Waan Bixiyey" → dalabku WhatsApp u diri doonaa!' },
+    returns:   { en: '🔄 Returns accepted within 7 days if item is unused and in original condition. Send photos and order details via WhatsApp.', so: 'Soo-celinta waxaa la aqbalaa 7 maalmood gudahood haddii sheyga aan la isticmaalin. WhatsApp-ka u dir sawirrada iyo faahfaahinta dalabka.' },
+    hours:     { en: '⏰ We\'re available 24/7 on WhatsApp. Physical orders processed Sat–Thu, 8AM–8PM Mogadishu time.', so: 'Waxaan ku joognaa WhatsApp-ka 24/7. Dalabada jirka ah waxaa la hawlgeliyaa Sabti-Khamiis, 8AM-8PM wakhtiga Muqdisho.' },
+    crypto:    { en: '₿ We accept USDT on 3 networks:\n• TRC-20 (Tron) — fastest, ~$0.01 fee\n• TON — cheapest, ~$0.001 fee\n• BEP-20 (BSC) — fast, ~$0.10 fee\n\nSend payment screenshot in WhatsApp after ordering.', so: 'Waxaan aqbalnaa USDT 3 network:\n• TRC-20 — ugu degdegsan, $0.01\n• TON — ugu jaban, $0.001\n• BEP-20 — degdeg, $0.10\n\nDir sawirka bixinta WhatsApp kadib dalabkaada.' }
+};
+
+function quickChat(topic) {
+    const a = chatKnowledge[topic];
+    if (a) appendChat(a.en + '\n\n🇸🇴 ' + a.so, 'bot');
+}
+
+function sendChat() {
+    const input = document.getElementById('chat-input');
+    const text = input.value.trim(); if (!text) return;
+    appendChat(text, 'user'); input.value = '';
+    const lower = text.toLowerCase();
+    let answer = null;
+    if (lower.match(/deliver|ship|geyn|city|magaalo/)) answer = chatKnowledge.delivery;
+    else if (lower.match(/zaad|\*883/)) answer = chatKnowledge.zaad;
+    else if (lower.match(/pay|lacag|sahal|dahab|evoucher|bix/)) answer = chatKnowledge.payment;
+    else if (lower.match(/return|refund|celi|soo.cel/)) answer = chatKnowledge.returns;
+    else if (lower.match(/hour|time|waqti|open|close|xidh/)) answer = chatKnowledge.hours;
+    else if (lower.match(/crypto|usdt|bitcoin|trc|ton|bep/)) answer = chatKnowledge.crypto;
+    if (answer) setTimeout(() => appendChat(answer.en + '\n\n🇸🇴 ' + answer.so, 'bot'), 500);
+    else setTimeout(() => appendChat("I'm not sure about that! 🤔\n\nFor specific questions please contact us directly on WhatsApp.\n\n🇸🇴 Su'aashan ma garan karo — WhatsApp-ka nagala soo xiriir.", 'bot'), 500);
+}
+
+function appendChat(text, type) {
+    const msgs = document.getElementById('chat-messages');
+    const div = document.createElement('div');
+    div.className = type === 'bot' ? 'chat-bot' : 'chat-user';
+    div.textContent = text;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
 }
 
 // ===== TOAST =====
@@ -1343,8 +2091,15 @@ function showToast(msg) {
     clearTimeout(toastTimer);
     document.getElementById('toast-text').textContent = msg;
     document.getElementById('toast').classList.add('show');
-    toastTimer = setTimeout(() => document.getElementById('toast').classList.remove('show'), 3000);
+    toastTimer = setTimeout(() => document.getElementById('toast').classList.remove('show'), 3500);
 }
+
+// Initialize page navigation default
+document.addEventListener('DOMContentLoaded', () => {
+    showPage('shop');
+    // Show marketing banners area
+    renderMarketingBanners();
+});
 </script>
 </body>
 </html>
