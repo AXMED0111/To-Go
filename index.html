@@ -347,14 +347,19 @@ input[type="file"].hidden-file{display:none;}
 
 <!-- LOADING -->
 <div id="loading-screen" class="loading-screen">
-    <div class="brand-gradient w-16 h-16 rounded-2xl flex items-center justify-center shadow-xl">
-        <i class="fas fa-store text-white text-2xl"></i>
+    <div class="brand-gradient w-20 h-20 rounded-3xl flex items-center justify-center shadow-2xl" style="animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both">
+        <i class="fas fa-store text-white text-3xl"></i>
     </div>
     <div class="text-center">
-        <p class="font-display font-800 text-xl" style="color:var(--text)">TO GO MARKET</p>
+        <p class="font-display font-800 text-2xl" style="color:var(--text)">TO GO MARKET</p>
         <p id="loading-msg" class="text-sm mt-1 pulse" style="color:var(--muted)">Connecting...</p>
     </div>
     <i class="fas fa-circle-notch spinner text-green-500 text-xl"></i>
+    <button id="loading-skip-btn" onclick="document.getElementById('loading-screen').classList.add('hidden')"
+        class="hidden text-sm font-600 px-5 py-2 rounded-full hover:opacity-80 transition-all"
+        style="background:var(--border);color:var(--muted)">
+        Open Store →
+    </button>
 </div>
 
 <!-- MOBILE HEADER -->
@@ -1104,9 +1109,17 @@ let chartCats = null, chartStock = null;
 window.addEventListener('firebase-ready', initApp);
 
 async function initApp() {
+    // Apply theme immediately
+    const savedTheme = localStorage.getItem('tgm-theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+
     try {
         document.getElementById('loading-msg').textContent = 'Loading store...';
-        const fbSettings = await window.FB.getSettings();
+        // Race Firebase against a 6s timeout so we never hang
+        const fbSettings = await Promise.race([
+            window.FB.getSettings(),
+            new Promise(function(_, reject) { setTimeout(function() { reject(new Error('timeout')); }, 6000); })
+        ]);
         if (fbSettings.store?.value)    Object.assign(settings, fbSettings.store.value);
         if (fbSettings.payments?.value) { const p=fbSettings.payments.value; if(p.crypto&&!p.crypto.trc20) p.crypto={trc20:'',ton:'',bep20:'',enabled:p.crypto.enabled||false}; Object.assign(payments,p); }
         if (fbSettings.shipping?.value) { const s=fbSettings.shipping.value; if(s.cities) Object.assign(shipping,s); else shipping.freeThreshold=s.freeThreshold||0; }
@@ -1119,11 +1132,12 @@ async function initApp() {
             if (isAdmin) { renderAdminProducts(); updateDashKPIs(); renderCharts(); }
         });
 
-        loadCustomers(); loadMarketing();
+        // ⚡ Show store immediately after settings — products load in background via listenProducts
         applySettings();
         document.getElementById('loading-screen').classList.add('hidden');
         document.getElementById('sync-dot').classList.add('synced');
         document.getElementById('role-label').textContent = 'Live';
+        loadCustomers(); loadMarketing();
 
         // Restore theme
         const savedTheme = localStorage.getItem('tgm-theme') || 'light';
@@ -1149,12 +1163,27 @@ async function initApp() {
         } catch(authErr) { console.warn('Auth listener skipped:', authErr.message); }
 
     } catch(err) {
-        console.error(err);
-        document.getElementById('loading-msg').textContent = 'Offline mode';
+        console.warn('Firebase load error:', err.message);
+        document.getElementById('loading-msg').textContent = err.message === 'timeout' ? 'Slow connection...' : 'Offline mode';
         document.getElementById('sync-dot').classList.add('error');
         products = JSON.parse(localStorage.getItem('tgm-products')||'[]');
         applySettings();
-        setTimeout(() => document.getElementById('loading-screen').classList.add('hidden'), 1500);
+        // Hide immediately — show store with whatever we have
+        document.getElementById('loading-screen').classList.add('hidden');
+        // Try again silently after 5s
+        setTimeout(async function() {
+            try {
+                const s = await window.FB.getSettings();
+                if (s.store?.value) Object.assign(settings, s.store.value);
+                if (s.payments?.value) Object.assign(payments, s.payments.value);
+                if (s.adminTeam?.value) adminTeam = s.adminTeam.value || [];
+                if (s.activeOrderAdmin?.value) activeOrderAdmin = s.activeOrderAdmin.value || null;
+                applySettings();
+                window.FB.listenProducts(function(prods) { products=prods; renderShop(); });
+                document.getElementById('sync-dot').className = 'sync-dot synced';
+                document.getElementById('role-label').textContent = 'Live';
+            } catch(e2) { /* silent */ }
+        }, 5000);
     }
 }
 
@@ -2195,16 +2224,38 @@ function showToast(msg){clearTimeout(toastTimer);document.getElementById('toast-
 // INIT NAVIGATION
 // ══════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
-    showPage('shop');
-    renderMarketingBanners();
-    // Clear search on page load to prevent stale search state
-    const si = document.getElementById('search-input'); if(si) si.value = '';
-    // Apply saved theme immediately
+    // Apply theme FIRST before any rendering
     const savedTheme = localStorage.getItem('tgm-theme') || 'light';
     document.documentElement.setAttribute('data-theme', savedTheme);
-    // Restore customer session from localStorage
+
+    showPage('shop');
+    renderMarketingBanners();
+    const si = document.getElementById('search-input'); if(si) si.value = '';
+
+    // Restore customer session from localStorage immediately
     const stored = localStorage.getItem('tgm-user');
     if (stored) { try { const u=JSON.parse(stored); loggedInUser=u; showLoggedIn(u); updateProfileStats(); } catch(e){} }
+
+    // ⚡ SPEED FIX: Don't wait for Firebase — show store after 800ms max
+    // Firebase will update products/settings in background via listenProducts
+    setTimeout(() => {
+        const ls = document.getElementById('loading-screen');
+        if (ls && !ls.classList.contains('hidden')) {
+            ls.classList.add('hidden');
+        }
+    }, 800);
+
+    // Hard fallback: force-show store after 4s no matter what
+    setTimeout(() => {
+        const ls = document.getElementById('loading-screen');
+        if (ls) ls.classList.add('hidden');
+    }, 4000);
+
+    // Show "Open Store" button after 2s if still loading
+    setTimeout(() => {
+        const btn = document.getElementById('loading-skip-btn');
+        if (btn) btn.classList.remove('hidden');
+    }, 2000);
 });
 </script>
 </body>
