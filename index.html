@@ -1092,7 +1092,7 @@ let shipping  = {
 };
 let cart = [], currentCategory = 'all', isAdmin = false, isSuperAdmin = false;
 let currentAdmin = null; // { username, name, permissions, whatsapp }
-let activeOrderAdmin = null; // The admin currently taking orders (set by super admin)
+let activeOrderAdmin = null; // { id, name, whatsapp } of admin currently taking orders
 let selectedPayment = null, currentUSSDCode = '', selectedCity = null;
 let loggedInUser = null, currentViewProduct = null;
 let mktType = 'banner', mktBg = '#dcfce7', mktFg = '#166534';
@@ -1363,7 +1363,7 @@ function renderOrderRouting() {
     </div>`;
     // Each admin with a WhatsApp number
     adminTeam.filter(a => a.whatsapp).forEach(a => {
-        const sel = activeOrderAdmin === a.id;
+        const sel = activeOrderAdmin && activeOrderAdmin.id === a.id;
         html += `<div onclick="setOrderAdmin('${a.id}')" class="flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all ${sel ? 'border-2 border-green-500' : 'border border-gray-200 hover:border-green-300'}" style="background:${sel?'var(--green-light)':'var(--bg)'}">
             <div class="w-10 h-10 brand-gradient rounded-xl flex items-center justify-center text-white font-800 text-sm flex-shrink-0">${(a.name||'?')[0].toUpperCase()}</div>
             <div class="flex-1">
@@ -1384,16 +1384,15 @@ function renderDashOrderRouting() {
     const pills = document.getElementById('dash-routing-pills'); if (!pills) return;
     const badge = document.getElementById('dash-active-badge');
     // Update badge
-    if (activeOrderAdmin) {
-        const a = adminTeam.find(x=>x.id===activeOrderAdmin);
-        if (badge && a) { badge.textContent = a.name; badge.className = 'text-xs font-800 px-3 py-1 rounded-full bg-blue-100 text-blue-700'; }
+    if (activeOrderAdmin && activeOrderAdmin.name) {
+        if (badge) { badge.textContent = activeOrderAdmin.name; badge.className = 'text-xs font-800 px-3 py-1 rounded-full bg-blue-100 text-blue-700'; }
     } else {
         if (badge) { badge.textContent = 'Main Store'; badge.className = 'text-xs font-800 px-3 py-1 rounded-full bg-green-100 text-green-700'; }
     }
     // Pill buttons for quick switch
     let html = `<button onclick="setOrderAdmin(null)" class="text-xs font-700 px-3 py-1.5 rounded-full transition-all ${!activeOrderAdmin?'bg-green-500 text-white':'hover:bg-green-50 text-green-600'}" style="${!activeOrderAdmin?'':'border:1px solid var(--border)'}"><i class="fas fa-store mr-1"></i>Main</button>`;
     adminTeam.filter(a=>a.whatsapp).forEach(a => {
-        const sel = activeOrderAdmin === a.id;
+        const sel = activeOrderAdmin && activeOrderAdmin.id === a.id;
         html += `<button onclick="setOrderAdmin('${a.id}')" class="text-xs font-700 px-3 py-1.5 rounded-full transition-all ${sel?'bg-blue-500 text-white':'hover:bg-blue-50 text-blue-600'}" style="${sel?'':'border:1px solid var(--border)'}">${(a.name||'?')[0].toUpperCase()}. ${a.name.split(' ')[0]}</button>`;
     });
     pills.innerHTML = html;
@@ -1401,13 +1400,22 @@ function renderDashOrderRouting() {
 
 async function setOrderAdmin(adminId) {
     if (!isSuperAdmin) return showToast('Only super admin can change order routing');
-    activeOrderAdmin = adminId;
-    await fbSaveSetting('activeOrderAdmin', adminId);
+    if (!adminId) {
+        // Reset to main store
+        activeOrderAdmin = null;
+        await fbSaveSetting('activeOrderAdmin', null);
+    } else {
+        const admin = adminTeam.find(a => a.id === adminId);
+        if (!admin) return showToast('Admin not found');
+        if (!admin.whatsapp) return showToast(`${admin.name} has no WhatsApp number set`);
+        // Store full object so proceedToWhatsApp never needs adminTeam lookup
+        activeOrderAdmin = { id: admin.id, name: admin.name, whatsapp: admin.whatsapp.replace(/\D/g,'') };
+        await fbSaveSetting('activeOrderAdmin', activeOrderAdmin);
+    }
     renderOrderRouting(); renderDashOrderRouting();
-    const admin = adminId ? adminTeam.find(a=>a.id===adminId) : null;
-    const name = admin ? admin.name : 'Main Store';
-    logAdminActivity(`Order routing → ${name}`);
-    showToast(`✅ Orders now going to: ${name}`);
+    const name = activeOrderAdmin ? activeOrderAdmin.name : 'Main Store';
+    logAdminActivity(\`Order routing → \${name}\`);
+    showToast(\`✅ Orders now going to: \${name}\`);
 }
 
 async function clearOrderRouting() { await setOrderAdmin(null); }
@@ -1462,6 +1470,11 @@ async function saveAdmin() {
     else adminTeam.push(adminObj);
 
     await fbSaveSetting('adminTeam', adminTeam);
+    // If edited admin is currently the active order taker, update routing object too
+    if (activeOrderAdmin && activeOrderAdmin.id === id && adminObj.whatsapp) {
+        activeOrderAdmin = { id: adminObj.id, name: adminObj.name, whatsapp: adminObj.whatsapp.replace(/\D/g,'') };
+        await fbSaveSetting('activeOrderAdmin', activeOrderAdmin);
+    }
     closeAddAdminModal(); renderAdminsList(); renderOrderRouting(); renderDashOrderRouting();
     logAdminActivity(`${editId?'Updated':'Created'} admin: ${username}`);
     showToast(editId ? 'Admin updated!' : `Admin "${username}" created!`);
@@ -1472,7 +1485,7 @@ async function deleteAdminAccount(id) {
     adminTeam = adminTeam.filter(a=>a.id!==id);
     await fbSaveSetting('adminTeam', adminTeam);
     // If deleted admin was the active order taker, reset routing
-    if (activeOrderAdmin === id) { activeOrderAdmin = null; await fbSaveSetting('activeOrderAdmin', null); }
+    if (activeOrderAdmin && activeOrderAdmin.id === id) { activeOrderAdmin = null; await fbSaveSetting('activeOrderAdmin', null); }
     renderAdminsList(); renderOrderRouting(); renderDashOrderRouting(); showToast('Admin removed');
 }
 
@@ -1749,9 +1762,8 @@ function openPaymentModal() {
     // Show active order-taker badge
     const badge = document.getElementById('order-taker-badge');
     const badgeName = document.getElementById('order-taker-name');
-    if (activeOrderAdmin) {
-        const oa = adminTeam.find(a=>a.id===activeOrderAdmin);
-        if (oa && badge && badgeName) { badgeName.textContent=oa.name; badge.classList.remove('hidden'); }
+    if (activeOrderAdmin && activeOrderAdmin.name) {
+        if (badge && badgeName) { badgeName.textContent=activeOrderAdmin.name; badge.classList.remove('hidden'); }
     } else if (badge) { badge.classList.add('hidden'); }
     document.getElementById('payment-modal').classList.add('active');
 }
@@ -1809,17 +1821,12 @@ function proceedToWhatsApp(paid=false) {
     if(!selectedPayment||!cart.length) return;
     const {sub,cost,total,free}=getTotal();
 
-    // Determine which WhatsApp to use:
-    // 1. If super admin has assigned an active order-taker → use their number
-    // 2. Else fall back to main store WhatsApp
+    // Order routing: use assigned admin's WhatsApp directly (no lookup needed)
     let waTarget = settings.whatsapp;
     let orderTakerName = 'Store';
-    if (activeOrderAdmin) {
-        const assigned = adminTeam.find(a => a.id === activeOrderAdmin);
-        if (assigned && assigned.whatsapp) {
-            waTarget = assigned.whatsapp;
-            orderTakerName = assigned.name;
-        }
+    if (activeOrderAdmin && activeOrderAdmin.whatsapp) {
+        waTarget = activeOrderAdmin.whatsapp.replace(/\D/g,'');
+        orderTakerName = activeOrderAdmin.name;
     }
 
     let msg=`🛒 *DALAB CUSUB — NEW ORDER*\n━━━━━━━━━━━━━━━━━━━━\n*Items:*\n`;
